@@ -11,10 +11,7 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -25,7 +22,7 @@ float lastX = 400, lastY = 300;
 bool firstMouse = true;
 float fov = 45.0f;
 
-Camera Cam(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), YAW, PITCH);
+Camera Cam(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f), YAW, PITCH);
 
 int main()
 {
@@ -53,13 +50,26 @@ int main()
         return -1;
     }
 
-    float vertices[] = {
+    glEnable(GL_DEPTH_TEST);
+
+    float floor_vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
          0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
          0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
          0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    };
+
+    int floor_coords[8][8] = {
+        {1,1,1,0,0,0,1,1},
+        {0,0,1,1,0,0,1,0},
+        {0,0,0,1,1,1,1,0},
+        {0,1,0,1,0,0,0,0},
+        {0,1,1,1,1,1,1,1},
+        {0,1,1,0,0,0,0,1},
+        {0,0,0,0,1,1,1,1},
+        {0,0,0,0,1,1,1,1},
     };
 
     unsigned int VAO;
@@ -69,7 +79,7 @@ int main()
     unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_vertices), floor_vertices, GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -117,12 +127,19 @@ int main()
     unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
     unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
 
+    Cam.MouseSensitivity = 0.1f;
 
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         glfwSwapBuffers(window);
         glfwPollEvents();
         processInput(window);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetCursorPosCallback(window, mouse_callback);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -144,11 +161,20 @@ int main()
         glBindVertexArray(VAO);
         
 
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::vec3 floorPos = glm::vec3(0.0f, 0.0f, -1.0f);
-        model = glm::translate(model, floorPos);
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        //generate floor
+        for (int i = 7; i >= 0; i--) {
+            for (int j = 0; j < 8; j++) {
+                if (floor_coords[i][j] == 1) {
+                    glm::mat4 model = glm::mat4(1.0f);
+                    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+                    model = glm::translate(model, glm::vec3(j,i,0));
+                    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+                    glDrawArrays(GL_TRIANGLES, 0, 6);
+                }
+                
+            }
+        }
+
     }
     
     glfwTerminate();
@@ -165,4 +191,31 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        Cam.ProcessKeyboard(FORWARD, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        Cam.ProcessKeyboard(BACKWARD, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        Cam.ProcessKeyboard(LEFT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        Cam.ProcessKeyboard(RIGHT, deltaTime);
+
+}
+
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+    Cam.ProcessMouseMovement(xoffset, yoffset, true);
 }
