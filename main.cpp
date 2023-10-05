@@ -72,13 +72,15 @@ int main()
         {0,0,0,0,1,1,1,1},
     };
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    //FLOOR
 
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    unsigned int VAO_floor;
+    glGenVertexArrays(1, &VAO_floor);
+    glBindVertexArray(VAO_floor);
+
+    unsigned int VBO_floor;
+    glGenBuffers(1, &VBO_floor);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_floor);
     glBufferData(GL_ARRAY_BUFFER, sizeof(floor_vertices), floor_vertices, GL_STATIC_DRAW);
 
     // position attribute
@@ -91,9 +93,10 @@ int main()
 
 
     //generate and bind texture object
-    unsigned int texture1;
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    unsigned int floor_texture;
+    glGenTextures(1, &floor_texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, floor_texture);
 
     // set the texture wrapping/filtering options (on the currently bound texture object)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -107,6 +110,55 @@ int main()
 
     int width, height, nrChannels;
     unsigned char* data1 = stbi_load("./assets/metal_floor.png", &width, &height, &nrChannels, 0);
+    if (data1)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data1);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+
+    stbi_image_free(data1); //free image memory
+
+    //WALL
+
+    unsigned int VAO_wall;
+    glGenVertexArrays(1, &VAO_wall);
+    glBindVertexArray(VAO_wall);
+
+    unsigned int VBO_wall;
+    glGenBuffers(1, &VBO_wall);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_wall);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_vertices), floor_vertices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // texture attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+
+    //generate and bind texture object
+    unsigned int wall_texture;
+    glGenTextures(1, &wall_texture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, wall_texture);
+
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    //load and generate texture
+
+    stbi_set_flip_vertically_on_load(true);
+
+    data1 = stbi_load("./assets/metal_wall.png", &width, &height, &nrChannels, 0);
     if (data1)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data1);
@@ -157,23 +209,73 @@ int main()
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glBindVertexArray(VAO);
-        
+        glBindVertexArray(VAO_floor);
 
         //generate floor
         for (int i = 7; i >= 0; i--) {
             for (int j = 0; j < 8; j++) {
                 if (floor_coords[i][j] == 1) {
+                    
                     glm::mat4 model = glm::mat4(1.0f);
                     model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
                     model = glm::translate(model, glm::vec3(j,i,0));
+                    glBindTexture(GL_TEXTURE_2D, floor_texture);
                     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
                     glDrawArrays(GL_TRIANGLES, 0, 6);
+
+                    //WALL
+                    //use floor coordinates to check where to place wall e.g. if floor coord = 1, check surronding coords, if surrounding is 0, place wall. if no surrounding i.e. out of coord space, place wall
+                    //FRONT
+                    //glActiveTexture(GL_TEXTURE1); // activate the texture unit first before binding texture
+                    glBindTexture(GL_TEXTURE_2D, wall_texture);
+                    glBindVertexArray(VAO_wall);
+                    
+
+                    if ( i + 1 > 7 || floor_coords[i + 1][j] == 0) {
+                        glm::mat4 model = glm::mat4(1.0f);
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+                        model = glm::translate(model, glm::vec3(j, i+1, 0));
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+                        glDrawArrays(GL_TRIANGLES, 0, 6);
+                    }
+                    //BACK
+                    if (i - 1 < 0 || floor_coords[i - 1][j] == 0) {
+                        glm::mat4 model = glm::mat4(1.0f);
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+                        model = glm::translate(model, glm::vec3(j, i - 1, 0));
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));
+                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+                        glDrawArrays(GL_TRIANGLES, 0, 6);
+                    }
+                    //LEFT
+                    if (j - 1 < 0 || floor_coords[i][j - 1] == 0) {
+                        glm::mat4 model = glm::mat4(1.0f);
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+                        model = glm::translate(model, glm::vec3(j - 1, i, 0));
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, -1.0, 0.0));
+                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+                        glDrawArrays(GL_TRIANGLES, 0, 6);
+                    }
+
+                    //RIGHT
+                    if (j + 1 > 7 || floor_coords[i][j + 1] == 0) {
+                        glm::mat4 model = glm::mat4(1.0f);
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+                        model = glm::translate(model, glm::vec3(j + 1, i, 0));
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
+                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+                        glDrawArrays(GL_TRIANGLES, 0, 6);
+                    }
+
+                    
+
                 }
-                
             }
         }
+
+        //generate walls
+        
 
     }
     
