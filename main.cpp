@@ -51,6 +51,8 @@ int main()
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     float floor_vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -109,10 +111,10 @@ int main()
     stbi_set_flip_vertically_on_load(true);
 
     int width, height, nrChannels;
-    unsigned char* data1 = stbi_load("./assets/metal_floor.png", &width, &height, &nrChannels, 0);
-    if (data1)
+    unsigned char* data = stbi_load("./assets/metal_floor.png", &width, &height, &nrChannels, 0);
+    if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data1);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -120,7 +122,7 @@ int main()
         std::cout << "Failed to load texture" << std::endl;
     }
 
-    stbi_image_free(data1); //free image memory
+    stbi_image_free(data); //free image memory
 
     //WALL
 
@@ -141,7 +143,6 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-
     //generate and bind texture object
     unsigned int wall_texture;
     glGenTextures(1, &wall_texture);
@@ -158,10 +159,10 @@ int main()
 
     stbi_set_flip_vertically_on_load(true);
 
-    data1 = stbi_load("./assets/metal_wall.png", &width, &height, &nrChannels, 0);
-    if (data1)
+    data = stbi_load("./assets/metal_wall.png", &width, &height, &nrChannels, 0);
+    if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data1);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -169,7 +170,64 @@ int main()
         std::cout << "Failed to load texture" << std::endl;
     }
 
-    stbi_image_free(data1); //free image memory
+    stbi_image_free(data); //free image memory
+
+    //enemy sprite
+    float sprite_vertices[] = {
+        -0.25f, -0.5f, 0.0f,  0.0f, 0.75f,
+         0.25f, -0.5f, 0.0f,  1.0f, 0.75f,
+         0.25f,  0.5f, 0.0f,  1.0f, 1.0f,
+         0.25f,  0.5f, 0.0f,  1.0f, 1.0f,
+        -0.25f,  0.5f, 0.0f,  0.0f, 1.0f,
+        -0.25f, -0.5f, 0.0f,  0.0f, 0.75f,
+    };
+
+    unsigned int VAO_sprite;
+    glGenVertexArrays(1, &VAO_sprite);
+    glBindVertexArray(VAO_sprite);
+
+    unsigned int VBO_sprite;
+    glGenBuffers(1, &VBO_sprite);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_sprite);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sprite_vertices), sprite_vertices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // texture attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+
+    //generate and bind texture object
+    unsigned int sprite_texture;
+    glGenTextures(1, &sprite_texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, sprite_texture);
+
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    //load and generate texture
+
+    stbi_set_flip_vertically_on_load(true);
+
+    data = stbi_load("./assets/monster_spritesheet.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+
+    stbi_image_free(data); //free image memory
 
 
     Shader ourShader("./shader.vs", "./shader.fs");
@@ -199,6 +257,7 @@ int main()
 
         ourShader.use();
         ourShader.setInt("texture1", 0);
+        //ourShader.setInt("texture2", 1);
 
         glm::mat4 projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
 
@@ -226,6 +285,7 @@ int main()
                     //WALL
                     //use floor coordinates to check where to place wall e.g. if floor coord = 1, check surronding coords, if surrounding is 0, place wall. if no surrounding i.e. out of coord space, place wall
                     //FRONT
+
                     //glActiveTexture(GL_TEXTURE1); // activate the texture unit first before binding texture
                     glBindTexture(GL_TEXTURE_2D, wall_texture);
                     glBindVertexArray(VAO_wall);
@@ -254,6 +314,7 @@ int main()
                         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
                         model = glm::translate(model, glm::vec3(j - 1, i, 0));
                         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, -1.0, 0.0));
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
                         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
                         glDrawArrays(GL_TRIANGLES, 0, 6);
                     }
@@ -264,6 +325,7 @@ int main()
                         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
                         model = glm::translate(model, glm::vec3(j + 1, i, 0));
                         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
+                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, -1.0));
                         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
                         glDrawArrays(GL_TRIANGLES, 0, 6);
                     }
@@ -274,9 +336,13 @@ int main()
             }
         }
 
-        //generate walls
-        
-
+        //generate sprite
+        glBindTexture(GL_TEXTURE_2D, sprite_texture);
+        glBindVertexArray(VAO_sprite);
+        glm::mat4 model = glm::mat4(1.0f);
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+         
     }
     
     glfwTerminate();
