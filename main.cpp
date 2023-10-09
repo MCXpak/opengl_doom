@@ -172,33 +172,59 @@ int main()
 
     stbi_image_free(data); //free image memory
 
-    //enemy sprite
-    float sprite_vertices[] = {
+    //ENEMY SPRITE
+    float sprite_vertices[4][30] = {
+        {
         -0.25f, -0.5f, 0.0f,  0.0f, 0.75f,
          0.25f, -0.5f, 0.0f,  1.0f, 0.75f,
          0.25f,  0.5f, 0.0f,  1.0f, 1.0f,
          0.25f,  0.5f, 0.0f,  1.0f, 1.0f,
         -0.25f,  0.5f, 0.0f,  0.0f, 1.0f,
         -0.25f, -0.5f, 0.0f,  0.0f, 0.75f,
+        },
+        {
+        -0.25f, -0.5f, 0.0f,  0.0f, 0.50f,
+         0.25f, -0.5f, 0.0f,  1.0f, 0.50f,
+         0.25f,  0.5f, 0.0f,  1.0f, 0.75f,
+         0.25f,  0.5f, 0.0f,  1.0f, 0.75f,
+        -0.25f,  0.5f, 0.0f,  0.0f, 0.75f,
+        -0.25f, -0.5f, 0.0f,  0.0f, 0.50f,
+        },
+        {
+        -0.25f, -0.5f, 0.0f,  0.0f, 0.25f,
+         0.25f, -0.5f, 0.0f,  1.0f, 0.25f,
+         0.25f,  0.5f, 0.0f,  1.0f, 0.50f,
+         0.25f,  0.5f, 0.0f,  1.0f, 0.50f,
+        -0.25f,  0.5f, 0.0f,  0.0f, 0.50f,
+        -0.25f, -0.5f, 0.0f,  0.0f, 0.25f,
+        },
+        {
+        -0.25f, -0.5f, 0.0f,  0.0f, 0.0f,
+         0.25f, -0.5f, 0.0f,  1.0f, 0.0f,
+         0.25f,  0.5f, 0.0f,  1.0f, 0.25f,
+         0.25f,  0.5f, 0.0f,  1.0f, 0.25f,
+        -0.25f,  0.5f, 0.0f,  0.0f, 0.25f,
+        -0.25f, -0.5f, 0.0f,  0.0f, 0.0f,
+        }
     };
 
-    unsigned int VAO_sprite;
-    glGenVertexArrays(1, &VAO_sprite);
-    glBindVertexArray(VAO_sprite);
+    GLuint VAO_sprites[4];
+    glGenVertexArrays(4, VAO_sprites);
 
-    unsigned int VBO_sprite;
-    glGenBuffers(1, &VBO_sprite);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_sprite);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(sprite_vertices), sprite_vertices, GL_STATIC_DRAW);
+    GLuint VBO_sprites[4];
+    glGenBuffers(4, VBO_sprites);
 
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // texture attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
+    for (int i = 0; i < 4; i++) {
+        glBindVertexArray(VAO_sprites[i]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_sprites[i]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(sprite_vertices[i]), sprite_vertices[i], GL_STATIC_DRAW);
+        // position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        // texture attribute
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+    }
 
     //generate and bind texture object
     unsigned int sprite_texture;
@@ -329,16 +355,14 @@ int main()
                         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
                         glDrawArrays(GL_TRIANGLES, 0, 6);
                     }
-
-                    
-
                 }
             }
         }
 
         //generate sprite
         glBindTexture(GL_TEXTURE_2D, sprite_texture);
-        glBindVertexArray(VAO_sprite);
+        int spriteFrame = (int)(glfwGetTime() * 2) % 3;
+        glBindVertexArray(VAO_sprites[spriteFrame]);
         glm::mat4 model = glm::mat4(1.0f);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 6);
