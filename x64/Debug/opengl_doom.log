@@ -1,9 +1,9 @@
 ﻿  main.cpp
 C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(270,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(403,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(404,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(408,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(409,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(410,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(411,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(405,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(406,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(410,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(411,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(412,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(413,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   opengl_doom.vcxproj -> C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\x64\Debug\opengl_doom.exe

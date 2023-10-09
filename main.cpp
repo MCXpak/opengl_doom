@@ -364,6 +364,8 @@ int main()
         int spriteFrame = (int)(glfwGetTime() * 2) % 3;
         glBindVertexArray(VAO_sprites[spriteFrame]);
         glm::mat4 model = glm::mat4(1.0f);
+        //Transpose of view matrix obtains billboarding effect
+        model = model * glm::transpose(Cam.GetViewMatrix());
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 6);
          
