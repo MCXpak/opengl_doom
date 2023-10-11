@@ -296,76 +296,83 @@ int main()
         glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
         glBindVertexArray(VAO_floor);
 
-        //generate floor
-        for (int i = 7; i >= 0; i--) {
-            for (int j = 0; j < 8; j++) {
-                if (floor_coords[i][j] == 1) {
-                    
-                    glm::mat4 model = glm::mat4(1.0f);
-                    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                    model = glm::translate(model, glm::vec3(j,i,0));
-                    glBindTexture(GL_TEXTURE_2D, floor_texture);
-                    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                    glDrawArrays(GL_TRIANGLES, 0, 6);
+        ////generate floor
+        //for (int i = 7; i >= 0; i--) {
+        //    for (int j = 0; j < 8; j++) {
+        //        if (floor_coords[i][j] == 1) {
+        //            
+        //            glm::mat4 model = glm::mat4(1.0f);
+        //            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+        //            model = glm::translate(model, glm::vec3(j,i,0));
+        //            glBindTexture(GL_TEXTURE_2D, floor_texture);
+        //            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        //            glDrawArrays(GL_TRIANGLES, 0, 6);
 
-                    //WALL
-                    //use floor coordinates to check where to place wall e.g. if floor coord = 1, check surronding coords, if surrounding is 0, place wall. if no surrounding i.e. out of coord space, place wall
-                    //FRONT
+        //            //WALL
+        //            //use floor coordinates to check where to place wall e.g. if floor coord = 1, check surronding coords, if surrounding is 0, place wall. if no surrounding i.e. out of coord space, place wall
+        //            //FRONT
 
-                    //glActiveTexture(GL_TEXTURE1); // activate the texture unit first before binding texture
-                    glBindTexture(GL_TEXTURE_2D, wall_texture);
-                    glBindVertexArray(VAO_wall);
-                    
+        //            //glActiveTexture(GL_TEXTURE1); // activate the texture unit first before binding texture
+        //            glBindTexture(GL_TEXTURE_2D, wall_texture);
+        //            glBindVertexArray(VAO_wall);
+        //            
 
-                    if ( i + 1 > 7 || floor_coords[i + 1][j] == 0) {
-                        glm::mat4 model = glm::mat4(1.0f);
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        model = glm::translate(model, glm::vec3(j, i+1, 0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                        glDrawArrays(GL_TRIANGLES, 0, 6);
-                    }
-                    //BACK
-                    if (i - 1 < 0 || floor_coords[i - 1][j] == 0) {
-                        glm::mat4 model = glm::mat4(1.0f);
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        model = glm::translate(model, glm::vec3(j, i - 1, 0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));
-                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                        glDrawArrays(GL_TRIANGLES, 0, 6);
-                    }
-                    //LEFT
-                    if (j - 1 < 0 || floor_coords[i][j - 1] == 0) {
-                        glm::mat4 model = glm::mat4(1.0f);
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        model = glm::translate(model, glm::vec3(j - 1, i, 0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, -1.0, 0.0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                        glDrawArrays(GL_TRIANGLES, 0, 6);
-                    }
+        //            if ( i + 1 > 7 || floor_coords[i + 1][j] == 0) {
+        //                glm::mat4 model = glm::mat4(1.0f);
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+        //                model = glm::translate(model, glm::vec3(j, i+1, 0));
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+        //                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        //                glDrawArrays(GL_TRIANGLES, 0, 6);
+        //            }
+        //            //BACK
+        //            if (i - 1 < 0 || floor_coords[i - 1][j] == 0) {
+        //                glm::mat4 model = glm::mat4(1.0f);
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+        //                model = glm::translate(model, glm::vec3(j, i - 1, 0));
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));
+        //                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        //                glDrawArrays(GL_TRIANGLES, 0, 6);
+        //            }
+        //            //LEFT
+        //            if (j - 1 < 0 || floor_coords[i][j - 1] == 0) {
+        //                glm::mat4 model = glm::mat4(1.0f);
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+        //                model = glm::translate(model, glm::vec3(j - 1, i, 0));
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, -1.0, 0.0));
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+        //                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        //                glDrawArrays(GL_TRIANGLES, 0, 6);
+        //            }
 
-                    //RIGHT
-                    if (j + 1 > 7 || floor_coords[i][j + 1] == 0) {
-                        glm::mat4 model = glm::mat4(1.0f);
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        model = glm::translate(model, glm::vec3(j + 1, i, 0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, -1.0));
-                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                        glDrawArrays(GL_TRIANGLES, 0, 6);
-                    }
-                }
-            }
-        }
+        //            //RIGHT
+        //            if (j + 1 > 7 || floor_coords[i][j + 1] == 0) {
+        //                glm::mat4 model = glm::mat4(1.0f);
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
+        //                model = glm::translate(model, glm::vec3(j + 1, i, 0));
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
+        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, -1.0));
+        //                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        //                glDrawArrays(GL_TRIANGLES, 0, 6);
+        //            }
+        //        }
+        //    }
+        //}
 
         //generate sprite
         glBindTexture(GL_TEXTURE_2D, sprite_texture);
         int spriteFrame = (int)(glfwGetTime() * 2) % 3;
         glBindVertexArray(VAO_sprites[spriteFrame]);
         glm::mat4 model = glm::mat4(1.0f);
+        glm::vec2 spriteFaceDirection = glm::vec2(0, 1);
+        glm::vec2 camYZ = glm::vec2(Cam.Position[0], Cam.Position[2]);
         //Transpose of view matrix obtains billboarding effect
-        model = model * glm::transpose(Cam.GetViewMatrix());
+        //model = model * glm::transpose(Cam.GetViewMatrix());
+        float alpha = glm::acos(glm::dot(spriteFaceDirection, camYZ) / (glm::length(spriteFaceDirection)*glm::length(camYZ)));
+        model = glm::rotate(model, alpha, glm::vec3(0.0, 1.0, 0.0));
+        //spriteFaceDirection = glm::vec2(glm::cos(alpha) * spriteFaceDirection[0] - glm::sin(alpha) * spriteFaceDirection[1], glm::sin(alpha) * spriteFaceDirection[0] + glm::cos(alpha) * spriteFaceDirection[1]);
+        std::cout << alpha << std::endl;
+        //model = glm::translate(model, glm::vec3(Cam.Position[0], Cam.Position[1], 0));
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 6);
          
@@ -394,6 +401,10 @@ void processInput(GLFWwindow* window)
         Cam.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         Cam.ProcessKeyboard(RIGHT, deltaTime);
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
 
 }
 
