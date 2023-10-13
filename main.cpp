@@ -25,6 +25,10 @@ float fov = 45.0f;
 glm::vec2 spriteFaceDirection = glm::vec2(0, 1);
 float alpha = 0;
 float tempAlpha = 0;
+float prevCamDir; 
+float prevAngle;
+float angle;
+float rotDirection = 1.0;
 
 Camera Cam(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f), YAW, PITCH);
 
@@ -369,23 +373,12 @@ int main()
         glBindVertexArray(VAO_sprites[spriteFrame]);
         glm::mat4 model = glm::mat4(1.0f);
         glm::vec2 camYZ = glm::vec2(Cam.Position[0], Cam.Position[2]);
-        std::cout << round(camYZ[0] * 100) << ", " << round(camYZ[1] * 100) << std::endl;
-
-        float angle = glm::acos(glm::dot(spriteFaceDirection, camYZ) / (glm::length(spriteFaceDirection) * glm::length(camYZ)));
-
-        std::cout << round( angle * 180/3.1415) << std::endl;
-        //Transpose of view matrix obtains billboarding effect
-        //model = model * glm::transpose(Cam.GetViewMatrix());
-        
-        //alpha = glm::acos(glm::dot(spriteFaceDirection, camYZ) / (glm::length(spriteFaceDirection) * glm::length(camYZ)));
-        //spriteFaceDirection = glm::vec2(glm::cos(alpha) * spriteFaceDirection[0] - glm::sin(alpha) * spriteFaceDirection[1], glm::sin(alpha) * spriteFaceDirection[0] + glm::cos(alpha) * spriteFaceDirection[1]);
+        alpha = glm::acos(glm::dot(spriteFaceDirection, camYZ) / (glm::length(spriteFaceDirection) * glm::length(camYZ)));
+        if (Cam.Position[0] < 0) {
+            alpha = -alpha;
+        }
+        float testAngle = 50 * 3.1415 / 180;
         model = glm::rotate(model, alpha, glm::vec3(0.0, 1.0, 0.0));
-        //std::cout << spriteFaceDirection[0] << ", " << spriteFaceDirection[1] << std::endl;
-        //std::cout << alpha * (180 / 3.14) << std::endl;
-        //alpha = 0;
-        
-        
-        //model = glm::translate(model, glm::vec3(Cam.Position[0], Cam.Position[1], 0));
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 6);
          
