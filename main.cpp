@@ -33,7 +33,8 @@ float rotDirection = 1.0;
 float moveInc = 0.01;
 float maxMove = 10;
 float minMove = -10;
-float currentPos = 0;
+float currentPosX = 0;
+float currentPosY = 0;
 
 Camera Cam(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f), YAW, PITCH);
 
@@ -378,10 +379,12 @@ int main()
         glBindVertexArray(VAO_sprites[spriteFrame]);
         glm::mat4 model = glm::mat4(1.0f);
         glm::vec2 camYZ = glm::vec2(Cam.Position[0], Cam.Position[2]);
-        glm::vec2 camYZminusCurrentPos = glm::vec2(camYZ[0] - currentPos, camYZ[1]);
+        glm::vec2 camYZminusCurrentPos = glm::vec2(camYZ[0] - currentPosX, camYZ[1] - currentPosY);
         std::cout << camYZminusCurrentPos[0] << ", " << camYZminusCurrentPos[1] << std::endl;
-        currentPos = 2 * sin(glfwGetTime());
-        model = glm::translate(model, glm::vec3(currentPos, 0.0, 0.0));
+        currentPosX = 2 * sin(glfwGetTime());
+        currentPosY = 2 * sin(glfwGetTime());
+        
+        model = glm::translate(model, glm::vec3(currentPosX, 0.0, currentPosY));
         alpha = glm::acos(glm::dot(spriteFaceDirection, camYZminusCurrentPos) / (glm::length(spriteFaceDirection) * glm::length(camYZminusCurrentPos)));
         if (camYZminusCurrentPos[0] < 0) {
             alpha = -alpha;
