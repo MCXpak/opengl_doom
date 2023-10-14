@@ -30,6 +30,11 @@ float prevAngle;
 float angle;
 float rotDirection = 1.0;
 
+float moveInc = 0.01;
+float maxMove = 10;
+float minMove = -10;
+float currentPos = 0;
+
 Camera Cam(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f), YAW, PITCH);
 
 int main()
@@ -373,12 +378,17 @@ int main()
         glBindVertexArray(VAO_sprites[spriteFrame]);
         glm::mat4 model = glm::mat4(1.0f);
         glm::vec2 camYZ = glm::vec2(Cam.Position[0], Cam.Position[2]);
-        alpha = glm::acos(glm::dot(spriteFaceDirection, camYZ) / (glm::length(spriteFaceDirection) * glm::length(camYZ)));
-        if (Cam.Position[0] < 0) {
+        glm::vec2 camYZminusCurrentPos = glm::vec2(camYZ[0] - currentPos, camYZ[1]);
+        std::cout << camYZminusCurrentPos[0] << ", " << camYZminusCurrentPos[1] << std::endl;
+        currentPos = 2 * sin(glfwGetTime());
+        model = glm::translate(model, glm::vec3(currentPos, 0.0, 0.0));
+        alpha = glm::acos(glm::dot(spriteFaceDirection, camYZminusCurrentPos) / (glm::length(spriteFaceDirection) * glm::length(camYZminusCurrentPos)));
+        if (camYZminusCurrentPos[0] < 0) {
             alpha = -alpha;
         }
         float testAngle = 50 * 3.1415 / 180;
         model = glm::rotate(model, alpha, glm::vec3(0.0, 1.0, 0.0));
+
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 6);
          
