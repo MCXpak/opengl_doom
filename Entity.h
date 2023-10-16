@@ -8,8 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Shader_s.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+//#define STB_IMAGE_IMPLEMENTATION
+//#include "stb_image.h"
 
 class Entity
 {
@@ -17,7 +17,7 @@ private:
 	glm::vec2 spriteFaceDirection = glm::vec2(0, 1);
 
 public:
-	float rotAngle;
+	float rotAngle = 0;
 	float x = 0;
 	float y = 0;
 	int numOfFrames = 4;

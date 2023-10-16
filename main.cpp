@@ -275,6 +275,8 @@ int main()
 
     Cam.MouseSensitivity = 0.1f;
 
+    Entity monster(sprite_vertices);
+
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -380,7 +382,7 @@ int main()
         currentPosX = 2 * sin(glfwGetTime());
         currentPosY = 2 * sin(glfwGetTime());
         
-        model = glm::translate(model, glm::vec3(currentPosX, 0.0, currentPosY));
+        model = glm::translate(model, glm::vec3(currentPosX+1, 0.0, currentPosY+1));
         alpha = glm::acos(glm::dot(spriteFaceDirection, camYZminusCurrentPos) / (glm::length(spriteFaceDirection) * glm::length(camYZminusCurrentPos)));
         if (camYZminusCurrentPos[0] < 0) {
             alpha = -alpha;
@@ -390,6 +392,8 @@ int main()
 
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        monster.draw(Cam.Position[0], Cam.Position[2], modelLoc);
          
     }
     
