@@ -1,13 +1,170 @@
 ﻿  main.cpp
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(33,21): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(284,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(384,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(385,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(392,44): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(435,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(436,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(440,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(441,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(442,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(443,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  opengl_doom.vcxproj -> C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\x64\Debug\opengl_doom.exe
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(730,12): error C2084: function 'int stbi__cpuid3(void)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(730): message : see previous definition of 'stbi__cpuid3'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(752,12): error C2084: function 'int stbi__sse2_available(void)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(752): message : see previous definition of 'stbi__sse2_available'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(754,16): error C2065: 'stbi__cpuid3': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(754,30): error C2440: 'initializing': cannot convert from 'int (__cdecl *)(void)' to 'int'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(754,14): message : There is no context in which this conversion is possible
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(818,3): error C2371: 'stbi__context': redefinition; different basic types
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(818): message : see declaration of 'stbi__context'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(824,13): error C2084: function 'void stbi__start_mem(stbi__context *,const stbi_uc *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(824): message : see previous definition of 'stbi__start_mem'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(834,13): error C2084: function 'void stbi__start_callbacks(stbi__context *,stbi_io_callbacks *,void *)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(834): message : see previous definition of 'stbi__start_callbacks'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(848,12): error C2084: function 'int stbi__stdio_read(void *,char *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(848): message : see previous definition of 'stbi__stdio_read'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(853,13): error C2084: function 'void stbi__stdio_skip(void *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(853): message : see previous definition of 'stbi__stdio_skip'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(863,12): error C2084: function 'int stbi__stdio_eof(void *)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(863): message : see previous definition of 'stbi__stdio_eof'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(868,26): error C2374: 'stbi__stdio_callbacks': redefinition; multiple initialization
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(868): message : see declaration of 'stbi__stdio_callbacks'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(875,13): error C2084: function 'void stbi__start_file(stbi__context *,FILE *)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(875): message : see previous definition of 'stbi__start_file'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(877,4): error C2065: 'stbi__start_callbacks': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(884,13): error C2084: function 'void stbi__rewind(stbi__context *)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(884): message : see previous definition of 'stbi__rewind'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(895,4): error C2365: 'STBI_ORDER_RGB': redefinition; previous definition was 'enumerator'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(895): message : see declaration of 'STBI_ORDER_RGB'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(896,4): error C2365: 'STBI_ORDER_BGR': redefinition; previous definition was 'enumerator'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(896): message : see declaration of 'STBI_ORDER_BGR'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(904,3): error C2371: 'stbi__result_info': redefinition; different basic types
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(904): message : see declaration of 'stbi__result_info'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(968,13): error C2086: 'const char *stbi__g_failure_reason': redefinition
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(968): message : see declaration of 'stbi__g_failure_reason'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(970,21): error C2084: function 'const char *stbi_failure_reason(void)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(970): message : see previous definition of 'stbi_failure_reason'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(976,12): warning C4003: not enough arguments for function-like macro invocation 'stbi__err'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(976,12): error C2084: function 'int stbi__err(const char *)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(976): message : see previous definition of 'stbi__err'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(983,14): error C2084: function 'void *stbi__malloc(size_t)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(983): message : see previous definition of 'stbi__malloc'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1000,12): error C2084: function 'int stbi__addsizes_valid(int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1000): message : see previous definition of 'stbi__addsizes_valid'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1012,12): error C2084: function 'int stbi__mul2sizes_valid(int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1012): message : see previous definition of 'stbi__mul2sizes_valid'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1022,12): error C2084: function 'int stbi__mad2sizes_valid(int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1022): message : see previous definition of 'stbi__mad2sizes_valid'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1024,11): error C2065: 'stbi__mul2sizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1024,42): error C2065: 'stbi__addsizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1024,72): warning C4551: function call missing argument list
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1024,72): error C2568: '&&': unable to resolve function overload
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1024,72): message : could be 'int stbi__mul2sizes_valid(int,int)'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1029,12): error C2084: function 'int stbi__mad3sizes_valid(int,int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1029): message : see previous definition of 'stbi__mad3sizes_valid'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1031,11): error C2065: 'stbi__mul2sizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1031,42): error C2065: 'stbi__mul2sizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1031,72): warning C4551: function call missing argument list
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1031,72): error C2568: '&&': unable to resolve function overload
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1031,72): message : could be 'int stbi__mul2sizes_valid(int,int)'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1032,7): error C2065: 'stbi__addsizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1037,12): error C2084: function 'int stbi__mad4sizes_valid(int,int,int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1037): message : see previous definition of 'stbi__mad4sizes_valid'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1039,11): error C2065: 'stbi__mul2sizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1039,42): error C2065: 'stbi__mul2sizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1039,72): warning C4551: function call missing argument list
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1039,72): error C2568: '&&': unable to resolve function overload
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1039,72): message : could be 'int stbi__mul2sizes_valid(int,int)'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1040,7): error C2065: 'stbi__mul2sizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1040,42): error C2065: 'stbi__addsizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1046,14): error C2084: function 'void *stbi__malloc_mad2(int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1046): message : see previous definition of 'stbi__malloc_mad2'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1048,9): error C2065: 'stbi__mad2sizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1048,8): warning C4551: function call missing argument list
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1049,11): error C2065: 'stbi__malloc': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1053,14): error C2084: function 'void *stbi__malloc_mad3(int,int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1053): message : see previous definition of 'stbi__malloc_mad3'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1055,9): error C2065: 'stbi__mad3sizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1055,8): warning C4551: function call missing argument list
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1056,11): error C2065: 'stbi__malloc': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1060,14): error C2084: function 'void *stbi__malloc_mad4(int,int,int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1060): message : see previous definition of 'stbi__malloc_mad4'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1062,9): error C2065: 'stbi__mad4sizes_valid': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1062,8): warning C4551: function call missing argument list
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1063,11): error C2065: 'stbi__malloc': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1068,12): error C2084: function 'int stbi__addints_valid(int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1068): message : see previous definition of 'stbi__addints_valid'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1076,12): error C2084: function 'int stbi__mul2shorts_valid(short,short)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1076): message : see previous definition of 'stbi__mul2shorts_valid'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1099,14): error C2084: function 'void stbi_image_free(void *)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1099): message : see previous definition of 'stbi_image_free'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1112,12): error C2374: 'stbi__vertically_flip_on_load_global': redefinition; multiple initialization
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1112): message : see declaration of 'stbi__vertically_flip_on_load_global'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1114,14): error C2084: function 'void stbi_set_flip_vertically_on_load(int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1114): message : see previous definition of 'stbi_set_flip_vertically_on_load'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1122,30): error C2086: 'int stbi__vertically_flip_on_load_local': redefinition
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1122): message : see declaration of 'stbi__vertically_flip_on_load_local'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1122,67): error C2086: 'int stbi__vertically_flip_on_load_set': redefinition
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1122): message : see declaration of 'stbi__vertically_flip_on_load_set'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1124,14): error C2084: function 'void stbi_set_flip_vertically_on_load_thread(int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1124): message : see previous definition of 'stbi_set_flip_vertically_on_load_thread'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1135,14): error C2084: function 'void *stbi__load_main(stbi__context *,int *,int *,int *,int,stbi__result_info *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1135): message : see previous definition of 'stbi__load_main'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1185,11): error C2065: 'stbi__err': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1188,17): error C2084: function 'stbi_uc *stbi__convert_16_to_8(stbi__uint16 *,int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1188): message : see previous definition of 'stbi__convert_16_to_8'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1194,26): error C2065: 'stbi__malloc': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1195,32): error C2065: 'stbi__err': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1204,22): error C2084: function 'stbi__uint16 *stbi__convert_8_to_16(stbi_uc *,int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1204): message : see previous definition of 'stbi__convert_8_to_16'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1210,32): error C2065: 'stbi__malloc': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1211,50): error C2065: 'stbi__err': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1220,13): error C2084: function 'void stbi__vertical_flip(void *,int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1220): message : see previous definition of 'stbi__vertical_flip'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1245,13): error C2084: function 'void stbi__vertical_flip_slices(void *,int,int,int,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1245): message : see previous definition of 'stbi__vertical_flip_slices'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1252,7): error C2065: 'stbi__vertical_flip': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1258,23): error C2084: function 'unsigned char *stbi__load_and_postprocess_8bit(stbi__context *,int *,int *,int *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1258): message : see previous definition of 'stbi__load_and_postprocess_8bit'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1261,19): error C2065: 'stbi__load_main': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1270,16): error C2065: 'stbi__convert_16_to_8': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1270,104): error C2568: '=': unable to resolve function overload
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1270,104): message : could be 'stbi_uc *stbi__convert_16_to_8(stbi__uint16 *,int,int,int)'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1278,7): error C2065: 'stbi__vertical_flip': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1284,22): error C2084: function 'stbi__uint16 *stbi__load_and_postprocess_16bit(stbi__context *,int *,int *,int *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1284): message : see previous definition of 'stbi__load_and_postprocess_16bit'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1287,19): error C2065: 'stbi__load_main': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1296,16): error C2065: 'stbi__convert_8_to_16': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1296,99): error C2568: '=': unable to resolve function overload
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1296,99): message : could be 'stbi__uint16 *stbi__convert_8_to_16(stbi_uc *,int,int,int)'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1305,7): error C2065: 'stbi__vertical_flip': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1312,13): error C2084: function 'void stbi__float_postprocess(float *,int *,int *,int *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1312): message : see previous definition of 'stbi__float_postprocess'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1316,7): error C2065: 'stbi__vertical_flip': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1335,14): error C2084: function 'FILE *stbi__fopen(const char *,const char *)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1335): message : see previous definition of 'stbi__fopen'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1364,18): error C2084: function 'stbi_uc *stbi_load(const char *,int *,int *,int *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1364): message : see previous definition of 'stbi_load'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1366,14): error C2065: 'stbi__fopen': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1366,41): error C2440: 'initializing': cannot convert from 'FILE *(__cdecl *)(const char *,const char *)' to 'FILE *'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1366,12): message : There is no context in which this conversion is possible
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1368,19): error C2065: 'stbi__err': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1374,18): error C2084: function 'stbi_uc *stbi_load_from_file(FILE *,int *,int *,int *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1374): message : see previous definition of 'stbi_load_from_file'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1378,4): error C2065: 'stbi__start_file': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1379,13): error C2065: 'stbi__load_and_postprocess_8bit': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1379,66): error C2568: '=': unable to resolve function overload
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1379,66): message : could be 'unsigned char *stbi__load_and_postprocess_8bit(stbi__context *,int *,int *,int *,int)'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1387,23): error C2084: function 'stbi_us *stbi_load_from_file_16(FILE *,int *,int *,int *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1387): message : see previous definition of 'stbi_load_from_file_16'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1391,4): error C2065: 'stbi__start_file': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1392,13): error C2065: 'stbi__load_and_postprocess_16bit': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1392,67): error C2568: '=': unable to resolve function overload
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1392,67): message : could be 'stbi__uint16 *stbi__load_and_postprocess_16bit(stbi__context *,int *,int *,int *,int)'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1400,18): error C2084: function 'stbi_us *stbi_load_16(const char *,int *,int *,int *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1400): message : see previous definition of 'stbi_load_16'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1402,14): error C2065: 'stbi__fopen': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1402,41): error C2440: 'initializing': cannot convert from 'FILE *(__cdecl *)(const char *,const char *)' to 'FILE *'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1402,12): message : There is no context in which this conversion is possible
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1404,31): error C2065: 'stbi__err': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1405,13): error C2065: 'stbi_load_from_file_16': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1405,56): error C2568: '=': unable to resolve function overload
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1405,56): message : could be 'stbi_us *stbi_load_from_file_16(FILE *,int *,int *,int *,int)'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1413,18): error C2084: function 'stbi_us *stbi_load_16_from_memory(const stbi_uc *,int,int *,int *,int *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1413): message : see previous definition of 'stbi_load_16_from_memory'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1416,4): error C2065: 'stbi__start_mem': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1417,11): error C2065: 'stbi__load_and_postprocess_16bit': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1420,18): error C2084: function 'stbi_us *stbi_load_16_from_callbacks(const stbi_io_callbacks *,void *,int *,int *,int *,int)' already has a body
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1420): message : see previous definition of 'stbi_load_16_from_callbacks'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\stb_image.h(1421,1): fatal  error C1003: error count exceeds 100; stopping compilation

@@ -8,6 +8,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "Camera_c.h"
+#include "Entity.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -23,12 +24,7 @@ bool firstMouse = true;
 float fov = 45.0f;
 
 glm::vec2 spriteFaceDirection = glm::vec2(0, 1);
-float alpha = 0;
-float tempAlpha = 0;
-float prevCamDir; 
-float prevAngle;
-float angle;
-float rotDirection = 1.0;
+float alpha;
 
 float moveInc = 0.01;
 float maxMove = 10;
