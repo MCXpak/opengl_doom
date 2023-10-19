@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Shader_s.h"
+#include "Camera_c.h"
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
@@ -27,9 +28,17 @@ public:
 	float entityVertices[4][30];
 	unsigned int entityTexture;
 	const char* textureLocation;
+	Camera* camera;
+	float camX = 0;
+	float camY = 0;
+	unsigned int uniformModelLoc;
 
-	Entity(float entityVertices[4][30])
+	Entity(float entityVertices[4][30], Camera* cam, Shader* shader)
 	{
+		camera = cam;
+
+		uniformModelLoc = glGetUniformLocation((*shader).ID, "model");
+
 		glGenVertexArrays(numOfFrames, entityVAOs);
 		glGenBuffers(numOfFrames, entityVBOs);
 
@@ -70,14 +79,17 @@ public:
 		stbi_image_free(data); //free image memory
 	};
 
-	void draw(float camPosX, float camPosY, unsigned int modelLoc)
+	void draw()
 	{
 		glBindTexture(GL_TEXTURE_2D, entityTexture);
 		int entityFrame = (int)(glfwGetTime() * 2) % 3;
 		glBindVertexArray(entityVAOs[entityFrame]);
 		glm::mat4 model = glm::mat4(1.0f);
 
-		glm::vec2 camYZ = glm::vec2(camPosX, camPosY);
+		camX = (*camera).Position[0];
+		camY = (*camera).Position[2];
+
+		glm::vec2 camYZ = glm::vec2(camX, camY);
 		glm::vec2 camYZminusCurrentPos = glm::vec2(camYZ[0] - x, camYZ[1] - y);
 		std::cout << camYZminusCurrentPos[0] << ", " << camYZminusCurrentPos[1] << std::endl;
 		x = 2 * sin(glfwGetTime());
@@ -91,10 +103,14 @@ public:
 		float testAngle = 50 * 3.1415 / 180;
 		model = glm::rotate(model, rotAngle, glm::vec3(0.0, 1.0, 0.0));
 
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(uniformModelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	};
+
+	void move(float moveX, float moveY) {
+
+	}
 };
 
 #endif

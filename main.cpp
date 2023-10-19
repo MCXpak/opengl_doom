@@ -275,7 +275,7 @@ int main()
 
     Cam.MouseSensitivity = 0.1f;
 
-    Entity monster(sprite_vertices);
+    Entity monster(sprite_vertices, &Cam, &ourShader);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -372,29 +372,8 @@ int main()
         //}
 
         //generate sprite
-        glBindTexture(GL_TEXTURE_2D, sprite_texture);
-        int spriteFrame = (int)(glfwGetTime() * 2) % 3;
-        glBindVertexArray(VAO_sprites[spriteFrame]);
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::vec2 camYZ = glm::vec2(Cam.Position[0], Cam.Position[2]);
-        glm::vec2 camYZminusCurrentPos = glm::vec2(camYZ[0] - currentPosX, camYZ[1] - currentPosY);
-        std::cout << camYZminusCurrentPos[0] << ", " << camYZminusCurrentPos[1] << std::endl;
-        currentPosX = 2 * sin(glfwGetTime());
-        currentPosY = 2 * sin(glfwGetTime());
-        
-        model = glm::translate(model, glm::vec3(currentPosX+1, 0.0, currentPosY+1));
-        alpha = glm::acos(glm::dot(spriteFaceDirection, camYZminusCurrentPos) / (glm::length(spriteFaceDirection) * glm::length(camYZminusCurrentPos)));
-        if (camYZminusCurrentPos[0] < 0) {
-            alpha = -alpha;
-        }
-        float testAngle = 50 * 3.1415 / 180;
-        model = glm::rotate(model, alpha, glm::vec3(0.0, 1.0, 0.0));
-
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        monster.draw(Cam.Position[0], Cam.Position[2], modelLoc);
-         
+        monster.draw();
+        monster.draw();
     }
     
     glfwTerminate();

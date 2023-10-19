@@ -1,17 +1,14 @@
 ﻿  main.cpp
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Entity.h(83,9): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Entity.h(84,9): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Entity.h(91,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Entity.h(95,9): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Entity.h(96,9): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Entity.h(103,1): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(29,21): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(282,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(382,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(383,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(390,44): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(435,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(436,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(440,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(441,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(442,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(443,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(415,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(416,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(420,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(421,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(422,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(423,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 LINK : warning LNK4098: defaultlib 'LIBCMTD' conflicts with use of other libs; use /NODEFAULTLIB:library
   opengl_doom.vcxproj -> C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\x64\Debug\opengl_doom.exe
