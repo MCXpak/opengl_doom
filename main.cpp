@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -64,15 +65,6 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    float floor_vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-    };
-
     int floor_coords[8][8] = {
         {1,1,1,0,0,0,1,1},
         {0,0,1,1,0,0,1,0},
@@ -83,104 +75,6 @@ int main()
         {0,0,0,0,1,1,1,1},
         {0,0,0,0,1,1,1,1},
     };
-
-    //FLOOR
-
-    unsigned int VAO_floor;
-    glGenVertexArrays(1, &VAO_floor);
-    glBindVertexArray(VAO_floor);
-
-    unsigned int VBO_floor;
-    glGenBuffers(1, &VBO_floor);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_floor);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_vertices), floor_vertices, GL_STATIC_DRAW);
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // texture attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-
-    //generate and bind texture object
-    unsigned int floor_texture;
-    glGenTextures(1, &floor_texture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, floor_texture);
-
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    //load and generate texture
-
-    stbi_set_flip_vertically_on_load(true);
-
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load("./assets/metal_floor.png", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-
-    stbi_image_free(data); //free image memory
-
-    //WALL
-
-    unsigned int VAO_wall;
-    glGenVertexArrays(1, &VAO_wall);
-    glBindVertexArray(VAO_wall);
-
-    unsigned int VBO_wall;
-    glGenBuffers(1, &VBO_wall);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_wall);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_vertices), floor_vertices, GL_STATIC_DRAW);
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // texture attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    //generate and bind texture object
-    unsigned int wall_texture;
-    glGenTextures(1, &wall_texture);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, wall_texture);
-
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    //load and generate texture
-
-    stbi_set_flip_vertically_on_load(true);
-
-    data = stbi_load("./assets/metal_wall.png", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-
-    stbi_image_free(data); //free image memory
 
     //ENEMY SPRITE
     float sprite_vertices[4][30] = {
@@ -251,8 +145,9 @@ int main()
     //load and generate texture
 
     stbi_set_flip_vertically_on_load(true);
-
-    data = stbi_load("./assets/monster_spritesheet.png", &width, &height, &nrChannels, 0);
+    
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load("./assets/monster_spritesheet.png", &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -272,10 +167,73 @@ int main()
     unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
     unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
     unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
+    unsigned int uniformColorLoc = glGetUniformLocation(ourShader.ID, "ourColor");
+    unsigned int uniformTextureBoolLoc = glGetUniformLocation(ourShader.ID, "textureBool");
 
     Cam.MouseSensitivity = 0.1f;
 
-    Entity monster(sprite_vertices, &Cam, &ourShader);
+    std::vector<Entity> floorArray;
+    std::vector<Entity> wallArray;
+
+    int wallArrayCount = 0;
+    int floorArrayCount = 0;
+
+    //generate floor
+    for (int i = 7; i >= 0; i--) {
+        for (int j = 0; j < 8; j++) {
+            if (floor_coords[i][j] == 1) {
+                floorArray.push_back(Entity(&Cam, &ourShader, &deltaTime, (int)glfwGetTime()));
+                floorArray[floorArrayCount].addTexture("./assets/metal_floor.png");
+                floorArray[floorArrayCount].rotate(90, -1, 0, 0);
+                floorArray[floorArrayCount].move(j, i, 0);
+                floorArrayCount += 1;
+
+                //FRONT
+                if (i + 1 > 7 || floor_coords[i + 1][j] == 0) {
+                    wallArray.push_back(Entity(&Cam, &ourShader, &deltaTime, (int)glfwGetTime()));
+                    wallArray[wallArrayCount].addTexture("./assets/metal_wall.png");
+                    wallArray[wallArrayCount].rotate(90, -1, 0, 0);
+                    wallArray[wallArrayCount].move(j, i + 1, 0);
+                    wallArray[wallArrayCount].rotate(90, -1, 0, 0);
+                    wallArrayCount += 1;
+                }
+                //BACK
+                if (i - 1 < 0 || floor_coords[i - 1][j] == 0) {
+                    wallArray.push_back(Entity(&Cam, &ourShader, &deltaTime, (int)glfwGetTime()));
+                    wallArray[wallArrayCount].addTexture("./assets/metal_wall.png");
+                    wallArray[wallArrayCount].rotate(90, -1, 0, 0);
+                    wallArray[wallArrayCount].move(j, i - 1, 0);
+                    wallArray[wallArrayCount].rotate(90, 1, 0, 0);
+                    wallArrayCount += 1;
+                }
+                //LEFT
+                if (j - 1 < 0 || floor_coords[i][j - 1] == 0) {
+                    wallArray.push_back(Entity(&Cam, &ourShader, &deltaTime, (int)glfwGetTime()));
+                    wallArray[wallArrayCount].addTexture("./assets/metal_wall.png");
+                    wallArray[wallArrayCount].rotate(90, -1, 0, 0);
+                    wallArray[wallArrayCount].move(j - 1, i, 0);
+                    wallArray[wallArrayCount].rotate(90, 0, -1, 0);
+                    wallArray[wallArrayCount].rotate(90, 0, 0, 1);
+                    wallArrayCount += 1;
+                }
+
+                //RIGHT
+                if (j + 1 > 7 || floor_coords[i][j + 1] == 0) {
+                    wallArray.push_back(Entity(&Cam, &ourShader, &deltaTime, (int)glfwGetTime()));
+                    wallArray[wallArrayCount].addTexture("./assets/metal_wall.png");
+                    wallArray[wallArrayCount].rotate(90, -1, 0, 0);
+                    wallArray[wallArrayCount].move(j, i, 0);
+                    wallArray[wallArrayCount].rotate(90, 0, -1, 0);
+                    wallArray[wallArrayCount].rotate(90, 0, 0, -1);
+                    wallArrayCount += 1;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < 32; i++) {
+        std::cout << floorArray[i].x << " ," << floorArray[i].y << std::endl;
+    }
 
     while (!glfwWindowShouldClose(window))
     {
@@ -304,76 +262,22 @@ int main()
 
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        
+        for (int i = 0; i < floorArray.size(); i++) {
+            floorArray[i].draw();
+        }
 
-        glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
-        glBindVertexArray(VAO_floor);
+        for (int i = 0; i < wallArray.size(); i++) {
+            wallArray[i].draw();
+        }
 
-        ////generate floor
-        //for (int i = 7; i >= 0; i--) {
-        //    for (int j = 0; j < 8; j++) {
-        //        if (floor_coords[i][j] == 1) {
-        //            
-        //            glm::mat4 model = glm::mat4(1.0f);
-        //            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-        //            model = glm::translate(model, glm::vec3(j,i,0));
-        //            glBindTexture(GL_TEXTURE_2D, floor_texture);
-        //            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        //            glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        //            //WALL
-        //            //use floor coordinates to check where to place wall e.g. if floor coord = 1, check surronding coords, if surrounding is 0, place wall. if no surrounding i.e. out of coord space, place wall
-        //            //FRONT
-
-        //            //glActiveTexture(GL_TEXTURE1); // activate the texture unit first before binding texture
-        //            glBindTexture(GL_TEXTURE_2D, wall_texture);
-        //            glBindVertexArray(VAO_wall);
-        //            
-
-        //            if ( i + 1 > 7 || floor_coords[i + 1][j] == 0) {
-        //                glm::mat4 model = glm::mat4(1.0f);
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-        //                model = glm::translate(model, glm::vec3(j, i+1, 0));
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-        //                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        //                glDrawArrays(GL_TRIANGLES, 0, 6);
-        //            }
-        //            //BACK
-        //            if (i - 1 < 0 || floor_coords[i - 1][j] == 0) {
-        //                glm::mat4 model = glm::mat4(1.0f);
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-        //                model = glm::translate(model, glm::vec3(j, i - 1, 0));
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));
-        //                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        //                glDrawArrays(GL_TRIANGLES, 0, 6);
-        //            }
-        //            //LEFT
-        //            if (j - 1 < 0 || floor_coords[i][j - 1] == 0) {
-        //                glm::mat4 model = glm::mat4(1.0f);
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-        //                model = glm::translate(model, glm::vec3(j - 1, i, 0));
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, -1.0, 0.0));
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-        //                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        //                glDrawArrays(GL_TRIANGLES, 0, 6);
-        //            }
-
-        //            //RIGHT
-        //            if (j + 1 > 7 || floor_coords[i][j + 1] == 0) {
-        //                glm::mat4 model = glm::mat4(1.0f);
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-        //                model = glm::translate(model, glm::vec3(j + 1, i, 0));
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
-        //                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, -1.0));
-        //                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        //                glDrawArrays(GL_TRIANGLES, 0, 6);
-        //            }
-        //        }
-        //    }
-        //}
+        //testFloor.draw();
+        //glActiveTexture(0);
 
         //generate sprite
-        monster.draw();
-        monster.draw();
+        
+        //monster.move(2 * sin(glfwGetTime()) , 2 * sin(glfwGetTime()));
+        //monster.setVelocity(1,0);
     }
     
     glfwTerminate();
