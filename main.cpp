@@ -291,8 +291,10 @@ int main()
         testWall.setVelocity(2 * sin(glfwGetTime()), 0.0, 0.0);
 
         checkCollision(testWall, testWall1);
-        std::cout << "A: " << testWall.x << ", " << testWall.y << std::endl;
-        std::cout << "B: " << testWall1.x << ", " << testWall1.y << std::endl;
+        std::cout << "A x: " << testWall.x << std::endl;
+        std::cout << "A sizeX: " << testWall.sizeX << std::endl;
+        std::cout << "B x: " << testWall1.x << std::endl;
+        std::cout << "B sizeX: " << testWall1.sizeX << std::endl;
     }
     
     glfwTerminate();
@@ -302,21 +304,15 @@ int main()
 
 void checkCollision(Entity a, Entity b) {
 
-    //Check collision in X
-    if (a.x - b.x < (a.sizeX / 2)) {
-        std::cout << "collided" << std::endl;
+    float leftA = a.x - a.sizeX/2;
+    float rightA = a.x + a.sizeX/2;
+
+    float leftB = b.x - b.sizeX/2;
+    float rightB = b.x + b.sizeX/2;
+
+    if (rightA >= leftB && leftA <= rightB) {
+        std::cout << "collided!" << std::endl;
     }
-
-    if (b.x - a.x > (a.sizeX / 2)) {
-        std::cout << "collided" << std::endl;
-    }
-
-
-
-    //Check collision in Y
-
-    
-    //Check collision in Z
 
 };
 
