@@ -14,6 +14,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void checkCollision(Entity a, Entity b);
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -178,8 +179,10 @@ int main()
     int wallArrayCount = 0;
     int floorArrayCount = 0;
 
+
+
     //generate floor
-    for (int i = 7; i >= 0; i--) {
+    /*for (int i = 7; i >= 0; i--) {
         for (int j = 0; j < 8; j++) {
             if (floor_coords[i][j] == 1) {
                 floorArray.push_back(Entity(&Cam, &ourShader, &deltaTime, (int)glfwGetTime()));
@@ -229,11 +232,15 @@ int main()
                 }
             }
         }
-    }
+    }*/
 
-    for (int i = 0; i < 32; i++) {
-        std::cout << floorArray[i].x << " ," << floorArray[i].y << std::endl;
-    }
+    Entity testWall(&Cam, &ourShader, &deltaTime, (int)glfwGetTime());
+    testWall.addTexture("./assets/metal_wall.png");
+    testWall.move(0.5, 0, 0);
+
+    Entity testWall1(&Cam, &ourShader, &deltaTime, (int)glfwGetTime());
+    testWall1.addTexture("./assets/metal_wall.png");
+    testWall1.move(2, 0, 0);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -263,13 +270,13 @@ int main()
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         
-        for (int i = 0; i < floorArray.size(); i++) {
+        /*for (int i = 0; i < floorArray.size(); i++) {
             floorArray[i].draw();
         }
 
         for (int i = 0; i < wallArray.size(); i++) {
             wallArray[i].draw();
-        }
+        }*/
 
         //testFloor.draw();
         //glActiveTexture(0);
@@ -278,10 +285,38 @@ int main()
         
         //monster.move(2 * sin(glfwGetTime()) , 2 * sin(glfwGetTime()));
         //monster.setVelocity(1,0);
+
+        testWall.draw();
+        testWall1.draw();
+        testWall.setVelocity(2 * sin(glfwGetTime()), 0.0, 0.0);
+
+        checkCollision(testWall, testWall1);
+        std::cout << "A: " << testWall.x << ", " << testWall.y << std::endl;
+        std::cout << "B: " << testWall1.x << ", " << testWall1.y << std::endl;
     }
     
     glfwTerminate();
 	return 0;
+
+};
+
+void checkCollision(Entity a, Entity b) {
+
+    //Check collision in X
+    if (a.x - b.x < (a.sizeX / 2)) {
+        std::cout << "collided" << std::endl;
+    }
+
+    if (b.x - a.x > (a.sizeX / 2)) {
+        std::cout << "collided" << std::endl;
+    }
+
+
+
+    //Check collision in Y
+
+    
+    //Check collision in Z
 
 };
 

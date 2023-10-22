@@ -27,6 +27,7 @@ public:
 	glm::vec3 rotationAxisVec;
 	float velX = 0;
 	float velY = 0;
+	float velZ = 0;
 	float accel = 0;
 	std::string name;
 	GLuint entityVAO;
@@ -44,6 +45,10 @@ public:
 	float* deltaTime;
 	bool billboard = false;
 	glm::mat4 model = glm::mat4(1.0f);
+	float sizeX = 1;
+	float sizeY= 1;
+	float sizeZ = 1;
+
 
 	float vertices[30] = {
 		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -109,11 +114,19 @@ public:
 
 		//v = u + at  - Kinematics
 		velX = velX + accel * (*deltaTime);
-		velY = velY + accel * glfwGetTime();
+		velY = velY + accel * (*deltaTime);
+		velZ = velZ + accel * (*deltaTime);
 
 		// s = ut
 		x = x + velX * (*deltaTime);
-		y = y + velX * (*deltaTime);
+		y = y + velY * (*deltaTime);
+		z = z + velZ * (*deltaTime);
+		
+		float deltaX = (x + velX * (*deltaTime)) - x;
+		float deltaY = (y + velY * (*deltaTime)) - y;
+		float deltaZ = (z + velZ * (*deltaTime)) - z;
+
+		//model = glm::translate(model, glm::vec3(x, y, z));
 
 		if (billboard) {
 			glm::vec2 camYZ = glm::vec2(camX, camY);
@@ -129,7 +142,7 @@ public:
 		//	//model = glm::rotate(model, glm::radians(rotation), rotationAxisVec);
 		//}
 		
-		//model = glm::translate(model, glm::vec3(x, y, z));
+		model = glm::translate(model, glm::vec3(deltaX, deltaY, deltaZ));
 	
 		glUniformMatrix4fv(uniformModelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -150,9 +163,19 @@ public:
 		//rotationAxisVec = glm::vec3(x, y, z);
 	}
 
-	void setVelocity(float velocityX, float velocityY) {
+	void scale(float sX, float sY, float sZ) {
+		sizeX = sizeX * sX;
+		sizeY = sizeY * sY;
+		sizeZ = sizeZ * sZ;
+
+		model = glm::scale(model, glm::vec3(sX, sY, sZ));
+	}
+
+
+	void setVelocity(float velocityX, float velocityY, float velocityZ){
 		velX = velocityX;
 		velY = velocityY;
+		velZ = velocityZ;
 	}
 
 	void setAcceleration(float acceleration) {
