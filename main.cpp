@@ -14,7 +14,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void checkCollision(Entity a, Entity b);
+void checkCollision(Entity &a, Entity &b);
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -179,8 +179,6 @@ int main()
     int wallArrayCount = 0;
     int floorArrayCount = 0;
 
-
-
     //generate floor
     /*for (int i = 7; i >= 0; i--) {
         for (int j = 0; j < 8; j++) {
@@ -242,6 +240,10 @@ int main()
     testWall1.addTexture("./assets/metal_wall.png");
     testWall1.move(2, 0, 0);
 
+    testWall.setVelocity(0.7, -0.3, 0.0);
+    testWall1.setVelocity(-0.1, 0.3, 0);
+    testWall1.mass = 5;
+
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -288,13 +290,9 @@ int main()
 
         testWall.draw();
         testWall1.draw();
-        testWall.setVelocity(2 * sin(glfwGetTime()), 0.0, 0.0);
+        
 
         checkCollision(testWall, testWall1);
-        std::cout << "A x: " << testWall.x << std::endl;
-        std::cout << "A sizeX: " << testWall.sizeX << std::endl;
-        std::cout << "B x: " << testWall1.x << std::endl;
-        std::cout << "B sizeX: " << testWall1.sizeX << std::endl;
     }
     
     glfwTerminate();
@@ -302,17 +300,65 @@ int main()
 
 };
 
-void checkCollision(Entity a, Entity b) {
+void checkCollision(Entity &a, Entity &b) {
 
-    float leftA = a.x - a.sizeX/2;
-    float rightA = a.x + a.sizeX/2;
+    float leftA = a.x - a.sizeX / 2;
+    float rightA = a.x + a.sizeX / 2;
+    float topA = a.y - a.sizeY / 2;
+    float bottomA = a.y + a.sizeY / 2;
+    float frontA = a.z - a.sizeZ / 2;
+    float backA = a.z + a.sizeZ / 2;
 
-    float leftB = b.x - b.sizeX/2;
-    float rightB = b.x + b.sizeX/2;
+    float leftB = b.x - b.sizeX / 2;
+    float rightB = b.x + b.sizeX / 2;
+    float topB = b.y - b.sizeY / 2;
+    float bottomB = b.y + b.sizeY / 2;
+    float frontB = b.z - b.sizeZ / 2;
+    float backB = b.z + b.sizeZ / 2;
 
-    if (rightA >= leftB && leftA <= rightB) {
-        std::cout << "collided!" << std::endl;
+    if (rightA >= leftB && leftA <= rightB &&
+        bottomA >= topB && topA <= bottomB &&
+        backA >= frontB && frontA <= backB) {
+        std::cout << "Collided!" << std::endl;
+
+        // Coefficient of restitution
+        float e = 1.0f;
+
+        // Calculate relative velocities in all three dimensions
+        float VrelX = b.velX - a.velX;
+        float VrelY = b.velY - a.velY;
+        float VrelZ = b.velZ - a.velZ;
+
+        std::cout << "VrelX: " << VrelX << ", VrelY:" << VrelY << std::endl;
+
+        // Calculate the magnitude of the relative velocity vector
+        float VrelMagnitude = std::sqrt(VrelX * VrelX + VrelY * VrelY + VrelZ * VrelZ);
+
+        if (VrelMagnitude > 0.0f) {
+            // Calculate the impulse magnitude
+            float J = -(1.0f + e) * VrelMagnitude / (1.0f / a.mass + 1.0f / b.mass);
+
+            // Calculate the normalized collision direction
+            float collisionDirectionX = VrelX / VrelMagnitude;
+            float collisionDirectionY = VrelY / VrelMagnitude;
+            float collisionDirectionZ = VrelZ / VrelMagnitude;
+
+            std::cout << "collisionDirectionX: " << collisionDirectionX << ", collisionDirectionY:" << collisionDirectionY << std::endl;
+
+            // Apply the impulse along the collision direction
+            a.velX -= J * collisionDirectionX / a.mass;
+            a.velY -= J * collisionDirectionY / a.mass;
+            a.velZ -= J * collisionDirectionZ / a.mass;
+
+            b.velX += J * collisionDirectionX / b.mass;
+            b.velY += J * collisionDirectionY / b.mass;
+            b.velZ += J * collisionDirectionZ / b.mass;
+        }
+
+        std::cout << "VelX: " << a.velX << ", VelY: " << a.velY << ", VelZ: " << a.velZ << std::endl;
     }
+
+
 
 };
 

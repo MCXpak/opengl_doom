@@ -29,6 +29,7 @@ public:
 	float velY = 0;
 	float velZ = 0;
 	float accel = 0;
+	float mass = 1;
 	std::string name;
 	GLuint entityVAO;
 	GLuint entityVBO;
