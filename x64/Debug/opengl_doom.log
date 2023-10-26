@@ -1,12 +1,42 @@
 ﻿  main.cpp
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(31,21): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(243,40): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(244,39): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(249,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(395,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(396,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(400,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(401,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(402,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\main.cpp(403,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  opengl_doom.vcxproj -> C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\x64\Debug\opengl_doom.exe
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(21,26): error C2059: syntax error: 'constant'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(21,55): error C2059: syntax error: 'constant'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(21,50): error C2838: 'vec3': illegal qualified name in member declaration
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(21,84): error C2098: unexpected token after data member 'PITCH'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(21,84): error C2059: syntax error: ')'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(23,22): error C2059: syntax error: 'string'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(93,10): error C2535: 'void Game::framebuffer_size_callback(GLFWwindow *,int,int)': member function already defined or declared
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(32): message : see declaration of 'Game::framebuffer_size_callback'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(98,10): error C2535: 'void Game::processInput(GLFWwindow *)': member function already defined or declared
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(33): message : see declaration of 'Game::processInput'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(118,10): error C2535: 'void Game::mouse_callback(GLFWwindow *,double,double)': member function already defined or declared
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(34): message : see declaration of 'Game::mouse_callback'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(50,13): error C2534: 'Game': constructor cannot return a value
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(13): message : see declaration of 'Game'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(50,13): error C2562: 'Game::Game': 'void' function returning a value
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(37): message : see declaration of 'Game::Game'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(54,1): error C3867: 'Game::framebuffer_size_callback': non-standard syntax; use '&' to create a pointer to member
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(59,13): error C2534: 'Game': constructor cannot return a value
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(13): message : see declaration of 'Game'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(59,13): error C2562: 'Game::Game': 'void' function returning a value
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(37): message : see declaration of 'Game::Game'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(72,9): error C2143: syntax error: missing ';' before '}'
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(74,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(78,25): error C2065: 'window': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(80,22): error C2065: 'window': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(81,26): error C2065: 'window': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(82,34): error C2065: 'window': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(82,1): error C3867: 'Game::mouse_callback': non-standard syntax; use '&' to create a pointer to member
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(104,13): error C2065: 'Cam': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(106,13): error C2065: 'Cam': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(108,13): error C2065: 'Cam': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(110,13): error C2065: 'Cam': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(120,13): error C2065: 'firstMouse': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(122,13): error C2065: 'lastX': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(123,13): error C2065: 'lastY': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(124,13): error C2065: 'firstMouse': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(127,32): error C2065: 'lastX': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(128,25): error C2065: 'lastY': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(129,9): error C2065: 'lastX': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(130,9): error C2065: 'lastY': undeclared identifier
+C:\Users\moura\OneDrive\Documents\Programming\opengl_doom\opengl_doom\Game.h(131,9): error C2065: 'Cam': undeclared identifier

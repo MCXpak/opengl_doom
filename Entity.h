@@ -1,5 +1,5 @@
-#ifndef ENTITY_H
-#define ENTITY_H
+#ifndef ENTITY
+#define ENTITY
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
