@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Shader_s.h"
 #include "Camera_c.h"
+#include "Controls.h"
 
 class Game
 {
@@ -36,7 +37,7 @@ public:
 
     void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     void processInput(GLFWwindow* window);
-    void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+    static void mouse_callback(GLFWwindow* window, double xpos, double ypos, bool firstMouse, float lastX, float lastY, Camera camera);
 
 
 	Game() {
@@ -94,7 +95,7 @@ public:
 
     }
 
-    void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+    static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
     };
@@ -119,7 +120,7 @@ public:
 
     }
 
-    static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+    static void mouse_callback(GLFWwindow* window, double xpos, double ypos, bool firstMouse, float lastX, float lastY, Camera camera)
     {
         if (firstMouse)
         {
