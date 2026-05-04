@@ -40,7 +40,7 @@ public:
 	std::vector<glm::vec2> instanceOffsets;
 	std::vector<glm::vec2> instanceVels;
 	bool isCube = true;
-	glm::vec3 color = glm::vec3(0.1f, 0.1f, 0.1f);
+	glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 	std::shared_ptr<Mesh> mesh;
 	Shader* shader;
 	Camera* camera;
@@ -115,6 +115,20 @@ public:
 		updateBoundingBox();
 	}
 
+	void setVel(float xVel, float yVel, float zVel)
+	{
+		velX = xVel;
+		velY = yVel;
+		velZ = zVel;
+	}
+
+	void setVel(float vel)
+	{
+		velX = vel;
+		velY = vel;
+		velZ = vel;
+	}
+
 	void rotate(float ang, float xAxis, float yAxis, float zAxis)
 	{
 		angle = ang;
@@ -138,6 +152,7 @@ public:
 	}
 
 	void Draw() {
+		update();
 		shader->use();
 		glm::mat4 view = camera->GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);

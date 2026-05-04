@@ -9,11 +9,13 @@ uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform float aMix;
 
+uniform vec3 objectColor;
+
 const vec4 innerColor = vec4(0.5, 0.0, 0.0, 1.0);
 const vec2 center = vec2(0.5, 0.5);
 const float cutoffHalfSize = 0.4;
 
 void main()
 {
-    FragColor = vec4(1.0);
+    FragColor = vec4(objectColor, 1.0);
 }

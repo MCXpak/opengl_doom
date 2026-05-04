@@ -38,10 +38,13 @@ uniform float aMix;
 uniform DirLight dirLight;
 uniform PointLight pointLight;
 uniform PointLight pointLights[2];
+uniform PointLight lasers[64];
 uniform vec3 viewPos;
 uniform vec3 objectColor;
 uniform bool isCube;
 uniform Material material;
+uniform int numPointLights;
+uniform int numLasers;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -59,8 +62,12 @@ void main()
     result = CalcDirLight(dirLight, norm, viewDir);
 
     // point light
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < numPointLights; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
+
+    // laser light
+    for (int i = 0; i < numLasers; i++)
+        result += CalcPointLight(lasers[i], norm, FragPos, viewDir);
     
     //FragColor = vec4(finalColor, 1.0);
     

@@ -15,6 +15,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void processMouseInput(GLFWwindow* window, Shader* shader, ResourceManager* manager, Camera* camera, std::vector<glm::vec3>* lightPositions);
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -92,6 +93,18 @@ std::vector<float> cubeVertices = {
      -0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f
 };
 
+std::vector<Entity> lasers = {};
+
+std::vector<float> base_sprite_vertices = {
+    // Position              // Normal            // Tex Coords (Base frame)
+    -0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.0f,
+     0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   1.0f, 0.0f,
+     0.25f,  0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   1.0f, 0.25f,
+     0.25f,  0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   1.0f, 0.25f,
+    -0.25f,  0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.25f,
+    -0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.0f
+};
+
 int main()
 {
 
@@ -118,6 +131,11 @@ int main()
         return -1;
     }
 
+    Shader ourShader("./shader.vs", "./shader.fs");
+    Shader lightObjectShader("./lightObjectShader.vs", "./lightObjectShader.fs");
+
+    ResourceManager manager;
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -142,11 +160,6 @@ int main()
         {0,0,0,0,1,1,1,1},
         {0,0,0,0,1,1,1,1},
     };
-
-    Shader ourShader("./shader.vs", "./shader.fs");
-    Shader lightObjectShader("./lightObjectShader.vs", "./lightObjectShader.fs");
-
-    ResourceManager manager;
 
     //FLOOR
 
@@ -192,15 +205,7 @@ int main()
         }
     };
 
-    std::vector<float> base_sprite_vertices = {
-        // Position              // Normal            // Tex Coords (Base frame)
-        -0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.0f,
-         0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   1.0f, 0.0f,
-         0.25f,  0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   1.0f, 0.25f,
-         0.25f,  0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   1.0f, 0.25f,
-        -0.25f,  0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.25f,
-        -0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.0f
-    };
+
 
     Entity enemyEntity(manager.createMesh("enemy_sprite", base_sprite_vertices, "./assets/monster_spritesheet.png"), &ourShader, &camera);
     enemyEntity.useUVAnimation = true;
@@ -209,19 +214,12 @@ int main()
     enemyEntity.animationSpeed = 5.0f;
 	enemyEntity.setPos(0, -0.1, 0);
 
-
-
-    unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
-    unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
-    unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
-    unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
-
     //Cam.MouseSensitivity = 0.1f;
 
     Entity lightCube(manager.createMesh("cube", cubeVertices, 36), &lightObjectShader, &camera, 0.0f, 0.6f, 0.0f);
 	lightCube.scale(0.2f, 0.1f, 0.2);
 
-    glm::vec3 pointLightPositions[] = {
+    std::vector<glm::vec3> pointLightPositions = {
         glm::vec3(lightCube.x, lightCube.y, lightCube.z),
         glm::vec3(5.0f, 5.0f, 5.0f),
     };
@@ -235,6 +233,7 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
         processInput(window);
+		processMouseInput(window, &lightObjectShader, &manager, &camera, &pointLightPositions);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSetCursorPosCallback(window, mouse_callback);
 
@@ -252,10 +251,12 @@ int main()
         ourShader.setVec3("dirLight.specular", 0.05f, 0.05f, 0.05f);
         ourShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < pointLightPositions.size(); i++) {
+			std::cout << "Number of point lights: " << pointLightPositions.size() << std::endl;
             std::stringstream ss;
             ss << "pointLights[" << i << "]";
             std::string currPointLight = ss.str();
+			ourShader.setInt("numPointLights", (int)pointLightPositions.size());
             ourShader.setVec3(currPointLight + ".position", pointLightPositions[i]);
             ourShader.setFloat(currPointLight + ".constant", 1.0f);
             ourShader.setFloat(currPointLight + ".linear", 0.09f);
@@ -264,6 +265,23 @@ int main()
             ourShader.setVec3(currPointLight + ".diffuse", glm::vec3(0.5f));
             ourShader.setVec3(currPointLight + ".specular", glm::vec3(0.5f));
         }
+
+        for (int i = 0; i < lasers.size(); i++) {
+            std::cout << "Number of lasers: " << lasers.size() << std::endl;
+            std::stringstream ss;
+            ss << "lasers[" << i << "]";
+            std::string currLaser = ss.str();
+			ourShader.setInt("numLasers", (int)lasers.size());
+            ourShader.setVec3(currLaser + ".position", glm::vec3(lasers[i].x, lasers[i].y, lasers[i].z));
+            ourShader.setFloat(currLaser + ".constant", 1.0f);
+            ourShader.setFloat(currLaser + ".linear", 0.09f);
+            ourShader.setFloat(currLaser + ".quadratic", 0.032f);
+            ourShader.setVec3(currLaser + ".ambient", glm::vec3(0.01f, 0.0f, 0.0f));
+            ourShader.setVec3(currLaser + ".diffuse", glm::vec3(0.1f, 0.0f, 0.0f));
+            ourShader.setVec3(currLaser + ".specular", glm::vec3(0.0002f));
+        }
+
+
 
         glm::mat4 projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
 
@@ -275,10 +293,7 @@ int main()
 
         ourShader.use();
 
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-        //generate floor
+        // Generate floor
         for (int i = 7; i >= 0; i--) {
             for (int j = 0; j < 8; j++) {
                 if (floor_coords[i][j] == 1) {
@@ -288,29 +303,29 @@ int main()
 					floorEntity.setPos(i, 0, j);
 					floorEntity.Draw();
 
-                    //WALL
-                    //use floor coordinates to check where to place wall e.g. if floor coord = 1, check surronding coords, if surrounding is 0, place wall. if no surrounding i.e. out of coord space, place wall
-                    //FRONT
+                    // WALL
+                    // use floor coordinates to check where to place wall e.g. if floor coord = 1, check surronding coords, if surrounding is 0, place wall. if no surrounding i.e. out of coord space, place wall
+                    // FRONT
 
                     if ( i + 1 > 7 || floor_coords[i + 1][j] == 0) {
 					    wallEntity.rotate(90.0f, 0.0f, 1.0f, 0.0f);
 					    wallEntity.setPos(i + 1, 0, j);
 					    wallEntity.Draw();
                     }
-                    //BACK
+                    // BACK
                     if (i - 1 < 0 || floor_coords[i - 1][j] == 0) {
 					    wallEntity.rotate(90.0f, 0.0f, -1.0f, 0.0f);
 					    wallEntity.setPos(i - 1, 0, j);
 					    wallEntity.Draw();
                     }
-                    //LEFT
+                    // LEFT
                     if (j - 1 < 0 || floor_coords[i][j - 1] == 0) {
                         wallEntity.rotate(180.0f, 1.0f, 0.0f, 0.0f);
 					    wallEntity.setPos(i, 0, j - 1);
 					    wallEntity.Draw();
                     }
 
-                    //RIGHT
+                    // RIGHT
                     if (j + 1 > 7 || floor_coords[i][j + 1] == 0) {
                         wallEntity.rotate(0.0f, -1.0f, 0.0f, 0.0f);
 					    wallEntity.setPos(i, 0, j + 1);
@@ -320,8 +335,14 @@ int main()
             }
         }
 
-        //generate sprite
+        // Draw sprites 
         enemyEntity.Draw();
+
+		// Draw lasers
+        for (Entity& laser : lasers) {
+            laser.Draw();
+		}
+
     }
     
     glfwTerminate();
@@ -329,10 +350,53 @@ int main()
 
 };
 
+void shoot(Shader& shader, ResourceManager& manager, Camera& camera, std::vector<glm::vec3>& lightPositions) {
+	std::cout << "Pew pew!" << std::endl;
+	Entity laser(manager.createMesh("laser", cubeVertices, 36), &shader, &camera);
+	laser.setPos(camera.Position.x, camera.Position.y - 0.1f, camera.Position.z);
+
+	// Direction and velocity
+	glm::vec3 dir = glm::normalize(camera.Front);
+	laser.setVel(dir.x * 0.1f, dir.y * 0.1f, dir.z * 0.1f);
+
+	// Orient the laser so its model forward (-Z) points along camera.Front
+	glm::vec3 modelForward = glm::vec3(0.0f, 0.0f, -1.0f);
+	float d = glm::clamp(glm::dot(modelForward, dir), -1.0f, 1.0f);
+	float angle = glm::degrees(acos(d));
+	glm::vec3 axis = glm::cross(modelForward, dir);
+
+	if (glm::length(axis) < 1e-6f) {
+		if (d < 0.0f) {
+			// Opposite: rotate 180 degrees around up axis
+			axis = glm::vec3(0.0f, 1.0f, 0.0f);
+			angle = 180.0f;
+		} else {
+			// Same direction: no rotation needed
+			axis = glm::vec3(1.0f, 0.0f, 0.0f);
+			angle = 0.0f;
+		}
+	} else {
+		axis = glm::normalize(axis);
+	}
+
+	laser.rotate(angle, axis.x, axis.y, axis.z);
+	laser.scale(0.1f, 0.1f, 0.5f);
+	laser.color = glm::vec3(1.0f, 0.0f, 0.0f);
+    laser.id = lightPositions.size();
+	lightPositions.push_back(glm::vec3(laser.x, laser.y, laser.z));
+	lasers.push_back(laser);
+}
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 };
+
+void processMouseInput(GLFWwindow* window, Shader* shader, ResourceManager* manager, Camera* camera, std::vector<glm::vec3>* lightPositions) {
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        shoot(*shader, *manager, *camera, *lightPositions);
+    }
+}
 
 void processInput(GLFWwindow* window)
 {
