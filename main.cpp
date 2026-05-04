@@ -20,6 +20,9 @@ void processMouseInput(GLFWwindow* window, Shader* shader, ResourceManager* mana
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
+float lastShotTime = 0.0f;
+float shotCooldown = 0.2f; // Seconds between shots
+
 float yaw = -90.0f;
 float pitch = 0.0f;
 float lastX = 400, lastY = 300;
@@ -105,6 +108,16 @@ std::vector<float> base_sprite_vertices = {
     -0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.0f
 };
 
+std::vector<float> base_gun_vertices = {
+    // Position              // Normal            // Tex Coords (Top-Left Frame)
+    -0.1f, -0.05f, 0.0f,    0.0f,   0.5f,  // Bottom-Left
+     0.1f, -0.05f, 0.0f,    0.125f, 0.5f,  // Bottom-Right
+     0.1f,  0.05f, 0.0f,    0.125f, 1.0f,  // Top-Right
+     0.1f,  0.05f, 0.0f,    0.125f, 1.0f,
+    -0.1f,  0.05f, 0.0f,    0.0f,   1.0f,  // Top-Left
+    -0.1f, -0.05f, 0.0f,    0.0f,   0.5f
+};
+
 int main()
 {
 
@@ -133,6 +146,7 @@ int main()
 
     Shader ourShader("./shader.vs", "./shader.fs");
     Shader lightObjectShader("./lightObjectShader.vs", "./lightObjectShader.fs");
+	Shader shader2D("./shader2D.vs", "./shader2D.fs");
 
     ResourceManager manager;
 
@@ -169,44 +183,6 @@ int main()
 	Entity wallEntity(manager.createMesh("wall", floor_vertices, (std::string)"./assets/metal_wall.png"), &ourShader, &camera);
 	wallEntity.entityTexture = 0;
 
-    //ENEMY SPRITE
-    float sprite_vertices[4][48] = {
-        {
-        -0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.75f,
-         0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.75f,
-         0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-         0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-        -0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-        -0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.75f,
-        },
-        {
-        -0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.50f,
-         0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.50f,
-         0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.75f,
-         0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.75f,
-        -0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.75f,
-        -0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.50f,
-        },
-        {
-        -0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.25f,
-         0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.25f,
-         0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.50f,
-         0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.50f,
-        -0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.50f,
-        -0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.25f,
-        },
-        {
-        -0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-         0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-         0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.25f,
-         0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.25f,
-        -0.25f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.25f,
-        -0.25f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-        }
-    };
-
-
-
     Entity enemyEntity(manager.createMesh("enemy_sprite", base_sprite_vertices, "./assets/monster_spritesheet.png"), &ourShader, &camera);
     enemyEntity.useUVAnimation = true;
     enemyEntity.numFrames = 4;
@@ -214,7 +190,6 @@ int main()
     enemyEntity.animationSpeed = 5.0f;
 	enemyEntity.setPos(0, -0.1, 0);
 
-    //Cam.MouseSensitivity = 0.1f;
 
     Entity lightCube(manager.createMesh("cube", cubeVertices, 36), &lightObjectShader, &camera, 0.0f, 0.6f, 0.0f);
 	lightCube.scale(0.2f, 0.1f, 0.2);
@@ -223,6 +198,10 @@ int main()
         glm::vec3(lightCube.x, lightCube.y, lightCube.z),
         glm::vec3(5.0f, 5.0f, 5.0f),
     };
+
+	Entity gunEntity(manager.createMesh2D("gun_sprite", base_gun_vertices, "./assets/gun_spritesheet.png"), &shader2D, &camera);
+	gunEntity.setPos(-0.5f, -0.3f, 0.0f);
+	gunEntity.scale(9.0f, 18.0f, 9.0f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -281,17 +260,7 @@ int main()
             ourShader.setVec3(currLaser + ".specular", glm::vec3(0.0002f));
         }
 
-
-
-        glm::mat4 projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
-
-        glm::mat4 view;
-        view = camera.GetViewMatrix(); //lookAt(Pos, Pos + Front, Up)
-
-        lightObjectShader.use();
         lightCube.Draw();
-
-        ourShader.use();
 
         // Generate floor
         for (int i = 7; i >= 0; i--) {
@@ -343,6 +312,8 @@ int main()
             laser.Draw();
 		}
 
+        gunEntity.Draw2D();
+
     }
     
     glfwTerminate();
@@ -353,7 +324,7 @@ int main()
 void shoot(Shader& shader, ResourceManager& manager, Camera& camera, std::vector<glm::vec3>& lightPositions) {
 	std::cout << "Pew pew!" << std::endl;
 	Entity laser(manager.createMesh("laser", cubeVertices, 36), &shader, &camera);
-	laser.setPos(camera.Position.x, camera.Position.y - 0.1f, camera.Position.z);
+	laser.setPos(camera.Position.x, camera.Position.y - 0.2f, camera.Position.z);
 
 	// Direction and velocity
 	glm::vec3 dir = glm::normalize(camera.Front);
@@ -393,10 +364,16 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 };
 
 void processMouseInput(GLFWwindow* window, Shader* shader, ResourceManager* manager, Camera* camera, std::vector<glm::vec3>* lightPositions) {
+    float currentTime = glfwGetTime();
+
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        shoot(*shader, *manager, *camera, *lightPositions);
+        if (currentTime - lastShotTime >= shotCooldown) {
+            shoot(*shader, *manager, *camera, *lightPositions);
+            lastShotTime = currentTime;
+        }
     }
 }
+
 
 void processInput(GLFWwindow* window)
 {

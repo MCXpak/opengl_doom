@@ -136,6 +136,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shader2D.fs" />
+    <None Include="shader2D.vs" />
     <None Include="lightObjectShader.fs" />
     <None Include="lightObjectShader.vs" />
     <None Include="lightObjShader.fs" />

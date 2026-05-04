@@ -154,9 +154,11 @@ public:
 	void Draw() {
 		update();
 		shader->use();
+
 		glm::mat4 view = camera->GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
+		// Animation
 		if (useUVAnimation) {
 			int frameIndex = (int)(glfwGetTime() * animationSpeed) % numFrames;
 			uvOffset.y = (numFrames - 1 - frameIndex) * uvFrameHeight;
@@ -164,8 +166,7 @@ public:
 		else {
 			uvOffset = glm::vec2(0.0f, 0.0f);
 		}
-		// Send the UV offset to the shader
-		glUniform2f(glGetUniformLocation(shader->ID, "uvOffset"), uvOffset.x, uvOffset.y);
+		shader->setVec2("uvOffset", uvOffset);
 		
 		shader->setMat4("view", view);
 		shader->setMat4("projection", projection);
@@ -189,6 +190,48 @@ public:
 		glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
 	
 		glBindVertexArray(0);
+	}
+
+	void Draw2D() {
+		update();
+		shader->use();
+		glDisable(GL_DEPTH_TEST);
+
+		//Ortho for 2D rendering
+		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+
+		// Animation
+		/*if (useUVAnimation) {
+			int frameIndex = (int)(glfwGetTime() * animationSpeed) % numFrames;
+			uvOffset.y = (numFrames - 1 - frameIndex) * uvFrameHeight;
+		}
+		else {
+			uvOffset = glm::vec2(0.0f, 0.0f);
+		}*/
+		shader->setVec2("uvOffset", uvOffset);
+
+		shader->setMat4("projection", projection);
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(x, y, z));
+		if (angle != 0.0f) {
+			model = glm::rotate(model, glm::radians(angle), glm::vec3(rotX, rotY, rotZ));
+		}
+		model = glm::scale(model, glm::vec3(sizeX, sizeY, sizeZ));
+		shader->setMat4("model", model);
+
+		//shader->setVec3("objectColor", color);
+		//shader->setBool("isCube", isCube);
+
+		glBindVertexArray(mesh->vaoId);
+		if (mesh->textureId != 0) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, mesh->textureId);
+		}
+		glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
+
+		glBindVertexArray(0);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	void DrawInstanced() {

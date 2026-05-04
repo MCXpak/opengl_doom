@@ -47,6 +47,12 @@
     <None Include="shader.vs">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="shader2D.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shader2D.vs">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera_c.h">
