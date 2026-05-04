@@ -1,5 +1,9 @@
 # opengl_doom
 
+Added particle effects on collision
+
+https://github.com/user-attachments/assets/330bce7c-a9a5-4f00-8a34-ed1baab1312b
+
 Added 2D sprite gun
 
 https://github.com/user-attachments/assets/0e6c3fdd-fe78-4a91-a48c-75a9d40d9dd2
