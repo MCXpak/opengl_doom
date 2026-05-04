@@ -31,6 +31,11 @@ public:
 	float velX = 0;
 	float velY = 0;
 	float velZ = 0;
+	float angle = 0;
+	float rotX = 0;
+	float rotY = 1.0f;
+	float rotZ = 0;
+	int entityTexture = -1;
 	int instances = 1;
 	std::vector<glm::vec2> instanceOffsets;
 	std::vector<glm::vec2> instanceVels;
@@ -39,6 +44,12 @@ public:
 	std::shared_ptr<Mesh> mesh;
 	Shader* shader;
 	Camera* camera;
+	std::vector<std::shared_ptr<Mesh>> animationFrames;
+	float animationSpeed = 5.0f; // Frames per second
+	bool useUVAnimation = false;
+	int numFrames = 1;
+	float uvFrameHeight = 1.0f; // Height of one frame in UV space (e.g., 0.25 for 4 frames)
+	glm::vec2 uvOffset = glm::vec2(0.0f);
 
 
 	Entity(std::shared_ptr<Mesh> meshP, Shader* s, Camera* c, float xCoord = 0, float yCoord = 0, float zCoord = 0)
@@ -63,6 +74,14 @@ public:
 		z = zCoord;
 		instances = ints;
 	};
+
+	void setPos(float xCoord, float yCoord, float zCoord)
+	{
+		x = xCoord;
+		y = yCoord;
+		z = zCoord;
+		updateBoundingBox();
+	}
 
 	void update() {
 		//Update entity with it's velocity properties
@@ -96,6 +115,14 @@ public:
 		updateBoundingBox();
 	}
 
+	void rotate(float ang, float xAxis, float yAxis, float zAxis)
+	{
+		angle = ang;
+		rotX = xAxis;
+		rotY = yAxis;
+		rotZ = zAxis;
+	}
+
 	void updateBoundingBox()
 	{
 		minX = x - sizeX/2;
@@ -114,11 +141,25 @@ public:
 		shader->use();
 		glm::mat4 view = camera->GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+		if (useUVAnimation) {
+			int frameIndex = (int)(glfwGetTime() * animationSpeed) % numFrames;
+			uvOffset.y = (numFrames - 1 - frameIndex) * uvFrameHeight;
+		}
+		else {
+			uvOffset = glm::vec2(0.0f, 0.0f);
+		}
+		// Send the UV offset to the shader
+		glUniform2f(glGetUniformLocation(shader->ID, "uvOffset"), uvOffset.x, uvOffset.y);
 		
 		shader->setMat4("view", view);
 		shader->setMat4("projection", projection);
+		shader->setVec3("viewPos", camera->Position);
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(x, y, z));
+		if (angle != 0.0f) {
+			model = glm::rotate(model, glm::radians(angle), glm::vec3(rotX, rotY, rotZ));
+		}
 		model = glm::scale(model, glm::vec3(sizeX, sizeY, sizeZ));
 		shader->setMat4("model", model);
 
@@ -126,7 +167,12 @@ public:
 		shader->setBool("isCube", isCube);
 
 		glBindVertexArray(mesh->vaoId);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		if (mesh->textureId != 0) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, mesh->textureId);
+		}
+		glDrawArrays(GL_TRIANGLES, 0, mesh->vertexCount);
+	
 		glBindVertexArray(0);
 	}
 
@@ -145,7 +191,7 @@ public:
 		shader->setMat4("model", model);
 		shader->setVec3("objectColor", color);
 		glBindVertexArray(mesh->vaoId);
-		glDrawArraysInstanced(GL_TRIANGLES, 0, 6, instances);
+		glDrawArraysInstanced(GL_TRIANGLES, 0, mesh->vertexCount, instances);
 		glBindVertexArray(0);
 	}
 

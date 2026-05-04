@@ -26,14 +26,26 @@ public:
 		return NULL;
 	};
 
-	std::shared_ptr<Mesh> createMesh(const std::string& name ,const std::vector<float> vertexData, const std::vector<int> indexData , const int vertexCount)
+	std::shared_ptr<Mesh> createMesh(const std::string& name, const std::vector<float> vertexData, const int vertexCount)
+	{
+		if (getMesh(name) != NULL) {
+			return meshCache[name];
+		}
+
+		std::cout << "Creating " << name << " mesh with " << vertexCount << " vertex count." << '\n';
+		meshCache[name] = std::make_shared<Mesh>(vertexData, vertexCount);
+		return meshCache[name];
+
+	};
+
+	std::shared_ptr<Mesh> createMesh(const std::string& name, const std::vector<float> vertexData, std::string texture_file_path)
 	{
 		if (getMesh(name) != NULL) {
 			return meshCache[name];
 		}
 
 		std::cout << "Creating " << name << " mesh..." << '\n';
-		meshCache[name] = std::make_shared<Mesh>(vertexData, indexData, vertexCount);
+		meshCache[name] = std::make_shared<Mesh>(vertexData, texture_file_path);
 		return meshCache[name];
 
 	};

@@ -92,11 +92,6 @@ std::vector<float> cubeVertices = {
      -0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f
 };
 
-std::vector<int> cubeIndices = {  // note that we start from 0!
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-};
-
 int main()
 {
 
@@ -127,7 +122,7 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    float floor_vertices[] = {
+    std::vector<float> floor_vertices = {
 		// positions        // Normals   // texture coords
         -0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   0.0f, 0.0f,
          0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   1.0f, 0.0f,
@@ -148,111 +143,18 @@ int main()
         {0,0,0,0,1,1,1,1},
     };
 
+    Shader ourShader("./shader.vs", "./shader.fs");
+    Shader lightObjectShader("./lightObjectShader.vs", "./lightObjectShader.fs");
+
+    ResourceManager manager;
+
     //FLOOR
 
-    unsigned int VAO_floor;
-    glGenVertexArrays(1, &VAO_floor);
-    glBindVertexArray(VAO_floor);
+	Entity floorEntity(manager.createMesh("floor", floor_vertices, (std::string) "./assets/metal_floor.png"), &ourShader, &camera);
+	floorEntity.entityTexture = 0;
 
-    unsigned int VBO_floor;
-    glGenBuffers(1, &VBO_floor);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_floor);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_vertices), floor_vertices, GL_STATIC_DRAW);
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-	// normal attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-    // texture attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-
-    //generate and bind texture object
-    unsigned int floor_texture;
-    glGenTextures(1, &floor_texture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, floor_texture);
-
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    //load and generate texture
-
-    stbi_set_flip_vertically_on_load(true);
-
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load("./assets/metal_floor.png", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-
-    stbi_image_free(data); //free image memory
-
-    //WALL
-
-    unsigned int VAO_wall;
-    glGenVertexArrays(1, &VAO_wall);
-    glBindVertexArray(VAO_wall);
-
-    unsigned int VBO_wall;
-    glGenBuffers(1, &VBO_wall);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_wall);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_vertices), floor_vertices, GL_STATIC_DRAW);
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // normal attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    // texture attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    //generate and bind texture object
-    unsigned int wall_texture;
-    glGenTextures(1, &wall_texture);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, wall_texture);
-
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    //load and generate texture
-
-    stbi_set_flip_vertically_on_load(true);
-
-    data = stbi_load("./assets/metal_wall.png", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-
-    stbi_image_free(data); //free image memory
+	Entity wallEntity(manager.createMesh("wall", floor_vertices, (std::string)"./assets/metal_wall.png"), &ourShader, &camera);
+	wallEntity.entityTexture = 0;
 
     //ENEMY SPRITE
     float sprite_vertices[4][48] = {
@@ -290,61 +192,24 @@ int main()
         }
     };
 
-    GLuint VAO_sprites[4];
-    glGenVertexArrays(4, VAO_sprites);
+    std::vector<float> base_sprite_vertices = {
+        // Position              // Normal            // Tex Coords (Base frame)
+        -0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.0f,
+         0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   1.0f, 0.0f,
+         0.25f,  0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   1.0f, 0.25f,
+         0.25f,  0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   1.0f, 0.25f,
+        -0.25f,  0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.25f,
+        -0.25f, -0.5f, 0.0f,     0.0f, 0.0f, -1.0f,   0.0f, 0.0f
+    };
 
-    GLuint VBO_sprites[4];
-    glGenBuffers(4, VBO_sprites);
-
-    for (int i = 0; i < 4; i++) {
-        glBindVertexArray(VAO_sprites[i]);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_sprites[i]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(sprite_vertices[i]), sprite_vertices[i], GL_STATIC_DRAW);
-        // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-		// normal attribute
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-        // texture attribute
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-    }
-
-    //generate and bind texture object
-    unsigned int sprite_texture;
-    glGenTextures(1, &sprite_texture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, sprite_texture);
-
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    //load and generate texture
-
-    stbi_set_flip_vertically_on_load(true);
-
-    data = stbi_load("./assets/monster_spritesheet.png", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-
-    stbi_image_free(data); //free image memory
+    Entity enemyEntity(manager.createMesh("enemy_sprite", base_sprite_vertices, "./assets/monster_spritesheet.png"), &ourShader, &camera);
+    enemyEntity.useUVAnimation = true;
+    enemyEntity.numFrames = 4;
+    enemyEntity.uvFrameHeight = 0.25f;  // 1.0 / 4 frames
+    enemyEntity.animationSpeed = 5.0f;
+	enemyEntity.setPos(0, -0.1, 0);
 
 
-    Shader ourShader("./shader.vs", "./shader.fs");
-	Shader lightObjectShader("./lightObjectShader.vs", "./lightObjectShader.fs");
-
-	ResourceManager manager;
 
     unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
     unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
@@ -353,7 +218,7 @@ int main()
 
     //Cam.MouseSensitivity = 0.1f;
 
-    Entity lightCube(manager.createMesh("cube", cubeVertices, cubeIndices, 36), &lightObjectShader, &camera, 0.0f, 1.0f, 0.0f);
+    Entity lightCube(manager.createMesh("cube", cubeVertices, 36), &lightObjectShader, &camera, 0.0f, 0.6f, 0.0f);
 	lightCube.scale(0.2f, 0.1f, 0.2);
 
     glm::vec3 pointLightPositions[] = {
@@ -374,8 +239,6 @@ int main()
         glfwSetCursorPosCallback(window, mouse_callback);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         ourShader.use();
@@ -415,98 +278,50 @@ int main()
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
-        glBindVertexArray(VAO_floor);
-
         //generate floor
         for (int i = 7; i >= 0; i--) {
             for (int j = 0; j < 8; j++) {
                 if (floor_coords[i][j] == 1) {
-                    
-                    glm::mat4 model = glm::mat4(1.0f);
-                    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                    model = glm::translate(model, glm::vec3(j,i,0));
-                    glBindTexture(GL_TEXTURE_2D, floor_texture);
-                    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+                    // FLOOR
+					floorEntity.rotate(90.0f, -1.0f, 0.0f, 0.0f);
+					floorEntity.setPos(i, 0, j);
+					floorEntity.Draw();
 
                     //WALL
                     //use floor coordinates to check where to place wall e.g. if floor coord = 1, check surronding coords, if surrounding is 0, place wall. if no surrounding i.e. out of coord space, place wall
                     //FRONT
 
-                    //glActiveTexture(GL_TEXTURE1); // activate the texture unit first before binding texture
-                    glBindTexture(GL_TEXTURE_2D, wall_texture);
-                    glBindVertexArray(VAO_wall);
-                   
-
-                     if ( i + 1 > 7 || floor_coords[i + 1][j] == 0) {
-                        glm::mat4 model = glm::mat4(1.0f);
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        model = glm::translate(model, glm::vec3(j, i+1, 0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                        glDrawArrays(GL_TRIANGLES, 0, 6);
+                    if ( i + 1 > 7 || floor_coords[i + 1][j] == 0) {
+					    wallEntity.rotate(90.0f, 0.0f, 1.0f, 0.0f);
+					    wallEntity.setPos(i + 1, 0, j);
+					    wallEntity.Draw();
                     }
                     //BACK
                     if (i - 1 < 0 || floor_coords[i - 1][j] == 0) {
-                        glm::mat4 model = glm::mat4(1.0f);
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        model = glm::translate(model, glm::vec3(j, i - 1, 0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));
-                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                        glDrawArrays(GL_TRIANGLES, 0, 6);
+					    wallEntity.rotate(90.0f, 0.0f, -1.0f, 0.0f);
+					    wallEntity.setPos(i - 1, 0, j);
+					    wallEntity.Draw();
                     }
                     //LEFT
                     if (j - 1 < 0 || floor_coords[i][j - 1] == 0) {
-                        glm::mat4 model = glm::mat4(1.0f);
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        model = glm::translate(model, glm::vec3(j - 1, i, 0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, -1.0, 0.0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                        glDrawArrays(GL_TRIANGLES, 0, 6);
+                        wallEntity.rotate(180.0f, 1.0f, 0.0f, 0.0f);
+					    wallEntity.setPos(i, 0, j - 1);
+					    wallEntity.Draw();
                     }
 
                     //RIGHT
-                      if (j + 1 > 7 || floor_coords[i][j + 1] == 0) {
-                        glm::mat4 model = glm::mat4(1.0f);
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0, 0.0, 0.0));
-                        model = glm::translate(model, glm::vec3(j + 1, i, 0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
-                        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, -1.0));
-                        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-                        glDrawArrays(GL_TRIANGLES, 0, 6);
+                    if (j + 1 > 7 || floor_coords[i][j + 1] == 0) {
+                        wallEntity.rotate(0.0f, -1.0f, 0.0f, 0.0f);
+					    wallEntity.setPos(i, 0, j + 1);
+					    wallEntity.Draw();
                     }
-                  }
+                }
             }
         }
 
-        
-
         //generate sprite
-        glBindTexture(GL_TEXTURE_2D, sprite_texture);
-        int spriteFrame = (int)(glfwGetTime() * 2) % 3;
-        glBindVertexArray(VAO_sprites[spriteFrame]);
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::vec2 camYZ = glm::vec2(camera.Position[0], camera.Position[2]);
-        glm::vec2 camYZminusCurrentPos = glm::vec2(camYZ[0] - currentPosX, camYZ[1] - currentPosY);
-        std::cout << camYZminusCurrentPos[0] << ", " << camYZminusCurrentPos[1] << std::endl;
-        //currentPosX = 2 * sin(glfwGetTime());
-        //currentPosY = 2 * sin(glfwGetTime());
-        
-        model = glm::translate(model, glm::vec3(currentPosX, 0.0, currentPosY));
-        alpha = glm::acos(glm::dot(spriteFaceDirection, camYZminusCurrentPos) / (glm::length(spriteFaceDirection) * glm::length(camYZminusCurrentPos)));
-        if (camYZminusCurrentPos[0] < 0) {
-            alpha = -alpha;
-        }
-        float testAngle = 50 * 3.1415 / 180;
-        model = glm::rotate(model, alpha, glm::vec3(0.0, 1.0, 0.0));
-
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		
-        
+        enemyEntity.Draw();
     }
     
     glfwTerminate();
