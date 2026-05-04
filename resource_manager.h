@@ -26,6 +26,7 @@ public:
 		return NULL;
 	};
 
+	// Regular 3D mesh creation
 	std::shared_ptr<Mesh> createMesh(const std::string& name, const std::vector<float> vertexData, const int vertexCount)
 	{
 		if (getMesh(name) != NULL) {
@@ -38,6 +39,7 @@ public:
 
 	};
 
+	// Mesh creation with texture
 	std::shared_ptr<Mesh> createMesh(const std::string& name, const std::vector<float> vertexData, std::string texture_file_path)
 	{
 		if (getMesh(name) != NULL) {
@@ -49,6 +51,8 @@ public:
 		return meshCache[name];
 
 	};
+
+	// 2D mesh creation with texture (different vertex attribute setup)
 	std::shared_ptr<Mesh> createMesh2D(const std::string& name, const std::vector<float> vertexData, std::string texture_file_path)
 	{
 		if (getMesh(name) != NULL) {
@@ -61,6 +65,7 @@ public:
 
 	};
 
+	// Mesh creation for instanced rendering (with instance offsets)
 	std::shared_ptr<Mesh> createMesh(const std::string& name, const std::vector<float> vertexData, const std::vector<glm::vec2> offsetData)
 	{
 		if (getMesh(name) != NULL) {

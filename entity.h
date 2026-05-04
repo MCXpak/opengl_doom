@@ -41,6 +41,7 @@ public:
 	std::vector<glm::vec2> instanceVels;
 	bool isCube = true;
 	glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+	float colorAlpha = 1.0f;
 	std::shared_ptr<Mesh> mesh;
 	Shader* shader;
 	Camera* camera;
@@ -50,6 +51,7 @@ public:
 	int numFrames = 1;
 	float uvFrameHeight = 1.0f; // Height of one frame in UV space (e.g., 0.25 for 4 frames)
 	glm::vec2 uvOffset = glm::vec2(0.0f);
+	int health = 4;
 
 
 	Entity(std::shared_ptr<Mesh> meshP, Shader* s, Camera* c, float xCoord = 0, float yCoord = 0, float zCoord = 0)
@@ -248,6 +250,7 @@ public:
 		model = glm::scale(model, glm::vec3(sizeX, sizeY, sizeZ));
 		shader->setMat4("model", model);
 		shader->setVec3("objectColor", color);
+		shader->setFloat("colorAlpha", colorAlpha);
 		glBindVertexArray(mesh->vaoId);
 		glDrawArraysInstanced(GL_TRIANGLES, 0, mesh->vertexCount, instances);
 		glBindVertexArray(0);

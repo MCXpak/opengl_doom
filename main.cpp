@@ -11,11 +11,16 @@
 #include "entity.h"
 #include "mesh.h"
 #include "resource_manager.h"
+#include <random>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void processMouseInput(GLFWwindow* window, Shader* shader, ResourceManager* manager, Camera* camera, std::vector<glm::vec3>* lightPositions);
+void checkCollision(Entity& a, Entity& b);
+void updateEntities(std::vector<Entity>& entityList, std::vector<std::vector<std::vector<int>>>& grid, Shader& shader, ResourceManager& manager);
+void generateParticles(Entity& ent, Shader& particleShader, ResourceManager& manager);
+void updateEntities(std::vector<Entity>& entityList, Shader& shader, ResourceManager& manager);
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -42,6 +47,12 @@ float maxMove = 10;
 float minMove = -10;
 float currentPosX = 0;
 float currentPosY = 0;
+
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_real_distribution<double> distr(-0.01, 0.01);
+
+std::vector<Entity> particles;
 
 Camera camera(glm::vec3(0.0f, 2.0f, 0.0f));
 
@@ -118,6 +129,19 @@ std::vector<float> base_gun_vertices = {
     -0.1f, -0.05f, 0.0f,    0.0f,   0.5f
 };
 
+std::vector<float> quadVertices = {
+    // positions     // colors
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  1.0f, 0.0f, 0.0f,
+    -0.05f, -0.05f,  1.0f, 0.0f, 0.0f,
+
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f,  0.05f,  1.0f, 0.0f, 0.0f
+};
+
+std::vector<Entity> entities;
+
 int main()
 {
 
@@ -147,6 +171,7 @@ int main()
     Shader ourShader("./shader.vs", "./shader.fs");
     Shader lightObjectShader("./lightObjectShader.vs", "./lightObjectShader.fs");
 	Shader shader2D("./shader2D.vs", "./shader2D.fs");
+	Shader particleShader("./particleShader.vs", "./particleShader.fs");
 
     ResourceManager manager;
 
@@ -189,7 +214,8 @@ int main()
     enemyEntity.uvFrameHeight = 0.25f;  // 1.0 / 4 frames
     enemyEntity.animationSpeed = 5.0f;
 	enemyEntity.setPos(0, -0.1, 0);
-
+	enemyEntity.color = glm::vec3(1.0f, 0.0f, 0.0f);
+	entities.push_back(enemyEntity);
 
     Entity lightCube(manager.createMesh("cube", cubeVertices, 36), &lightObjectShader, &camera, 0.0f, 0.6f, 0.0f);
 	lightCube.scale(0.2f, 0.1f, 0.2);
@@ -231,7 +257,7 @@ int main()
         ourShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
 
         for (int i = 0; i < pointLightPositions.size(); i++) {
-			std::cout << "Number of point lights: " << pointLightPositions.size() << std::endl;
+			//std::cout << "Number of point lights: " << pointLightPositions.size() << std::endl;
             std::stringstream ss;
             ss << "pointLights[" << i << "]";
             std::string currPointLight = ss.str();
@@ -246,7 +272,7 @@ int main()
         }
 
         for (int i = 0; i < lasers.size(); i++) {
-            std::cout << "Number of lasers: " << lasers.size() << std::endl;
+            //std::cout << "Number of lasers: " << lasers.size() << std::endl;
             std::stringstream ss;
             ss << "lasers[" << i << "]";
             std::string currLaser = ss.str();
@@ -304,8 +330,10 @@ int main()
             }
         }
 
-        // Draw sprites 
-        enemyEntity.Draw();
+        // Draw sprites
+        for (Entity& entity : entities) {
+            entity.Draw();
+		}
 
 		// Draw lasers
         for (Entity& laser : lasers) {
@@ -313,6 +341,19 @@ int main()
 		}
 
         gunEntity.Draw2D();
+
+		// Check collisions between lasers and enemy
+        for (Entity& laser : lasers) {
+            checkCollision(laser, entities[0]);
+			updateEntities(entities, particleShader, manager);
+		}
+
+        // Draw particles
+        for (Entity& particle : particles) {
+            float life = 0.05f;
+			particle.colorAlpha -= 0.01f; // Fade out as life decreases
+            particle.DrawInstanced();
+        }
 
     }
     
@@ -356,6 +397,115 @@ void shoot(Shader& shader, ResourceManager& manager, Camera& camera, std::vector
     laser.id = lightPositions.size();
 	lightPositions.push_back(glm::vec3(laser.x, laser.y, laser.z));
 	lasers.push_back(laser);
+}
+
+void checkCollision(Entity& a, Entity& b)
+//Currently only calcuating on XZ plane (horizontal)
+{
+    if (a.id != b.id && b.y <= 0.0f) {
+        //Check intersect
+        if (a.minX <= b.maxX && a.maxX >= b.minX
+            && a.minZ <= b.maxZ && a.maxZ >= b.minZ) {
+
+            //calculate overlap on each axis
+            // Overlap on X-axis
+            float overlapX = 0.0f;
+            if (a.maxX > b.minX && a.minX < b.maxX) {
+                // Find the smaller of the two overlaps
+                overlapX = std::min(a.maxX - b.minX, b.maxX - a.minX);
+            }
+
+            // Overlap on Z-axis
+            float overlapZ = 0.0f;
+            if (a.maxZ > b.minZ && a.minZ < b.maxZ) {
+                // Find the smaller of the two overlaps
+                overlapZ = std::min(a.maxZ - b.minZ, b.maxZ - a.minZ);
+            }
+
+            // Not applying reflections for now for lasers
+            if (overlapX < overlapZ) {
+                // Collision is primarily on the X-axis
+                // Apply reflection velocity
+                //a.velX = -a.velX;
+
+            }
+            else if (overlapZ < overlapX) {
+                // Collision is primarily on the Z-axis
+                // Apply reflection velocity
+                //a.velZ = -a.velZ;
+
+            }
+            else {
+                // overlapX == overlapZ, which means a corner-on collision
+                a.velX = -a.velX;
+                a.velZ = -a.velZ;
+            }
+            if (b.type == 1) {
+                b.type = 3;
+                a.type = 3;
+            }
+        }
+
+    }
+    if (b.y <= 0.0f) {
+        b.y = 0.0f;
+        b.velY = 0.0f;
+        b.updateBoundingBox();
+    }
+    ;
+
+
+}
+
+void generateParticles(Entity& ent, Shader& particleShader, ResourceManager& manager) {
+    // Number of particles to generate for each explosion
+    const int PARTICLE_COUNT = 64;
+
+    // Create offsets and velocities for each particle
+    std::vector<glm::vec2> instanceOffsets;
+    std::vector<glm::vec2> instanceVels;
+
+    for (int i = 0; i < PARTICLE_COUNT; ++i) {
+        // Small position jitter around the entity's X,Y to spread particles
+        float offsetX = (float)(distr(gen));
+        float offsetY = (float)(distr(gen));
+        instanceOffsets.emplace_back(offsetX, offsetY);
+
+        // Random initial velocity for each particle
+        instanceVels.emplace_back((float)(distr(gen)), (float)(distr(gen)));
+    }
+
+    // Only create the particle entity if we have offsets
+    if (!instanceOffsets.empty()) {
+        Entity particleExplosion(manager.createMesh("particle", quadVertices, instanceOffsets), &particleShader,
+            &camera, ent.x, ent.y, ent.z, (int)(instanceOffsets.size())
+        );
+		particleExplosion.scale(0.2f, 0.2f, 0.2f);
+        particleExplosion.color = ent.color;
+        std::cout << "Generated " << instanceOffsets.size() << " particles for explosion at (" << ent.x << ", " << ent.y << ", " << ent.z << ")" << std::endl;
+
+        // Attach instance data if Entity supports it (original code indicated these members)
+        particleExplosion.instanceOffsets = instanceOffsets;
+        particleExplosion.instanceVels = instanceVels;
+
+        particles.push_back(particleExplosion);
+    }
+}
+
+void updateEntities(std::vector<Entity>& entityList, Shader& shader, ResourceManager& manager) {
+    //Find indexes to "disappear" and/or update
+
+    for (Entity& e : entityList) {
+        if (e.type == 3) {
+			std::cout << "Entity " << e.id << " marked for explosion" << std::endl;
+            generateParticles(e, shader, manager);
+
+            e.translate(99, 99, 99);
+            e.type = 0;
+        }
+
+        e.update();
+    }
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

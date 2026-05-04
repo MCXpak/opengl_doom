@@ -166,7 +166,8 @@ public:
 		//glGenBuffers(1, &eboId);
 		glGenBuffers(1, &instanceVBO);
 
-		vertexCount = static_cast<int>(vertexData.size() / 8);
+		// NOTE: Sometimes can be more than 5 floats per vertex if we include normals, texture coords, etc. Adjust divisor accordingly.
+		vertexCount = static_cast<int>(vertexData.size() / 5);
 
 		glBindVertexArray(vaoId);
 
