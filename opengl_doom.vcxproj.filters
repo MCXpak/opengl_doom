@@ -22,4 +22,50 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="lightObjectShader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="lightObjectShader.vs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="lightObjShader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="lightObjShader.vs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="particleShader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="particleShader.vs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shader.vs">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera_c.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
