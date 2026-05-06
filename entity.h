@@ -28,6 +28,9 @@ public:
 	float maxY = y + sizeY;
 	float minZ = z - sizeZ;
 	float maxZ = z + sizeZ;
+	float boundBoxPaddingX = 0.0f;
+	float boundBoxPaddingY = 0.0f;
+	float boundBoxPaddingZ = 0.0f;
 	float velX = 0;
 	float velY = 0;
 	float velZ = 0;
@@ -52,6 +55,7 @@ public:
 	float uvFrameHeight = 1.0f; // Height of one frame in UV space (e.g., 0.25 for 4 frames)
 	glm::vec2 uvOffset = glm::vec2(0.0f);
 	int health = 4;
+	bool isEnemy = false;
 
 
 	Entity(std::shared_ptr<Mesh> meshP, Shader* s, Camera* c, float xCoord = 0, float yCoord = 0, float zCoord = 0)
@@ -141,12 +145,12 @@ public:
 
 	void updateBoundingBox()
 	{
-		minX = x - sizeX/2;
-		maxX = x + sizeX/2;
-		minY = y - sizeY/2;
-		maxY = y + sizeY/2;
-		minZ = z - sizeZ/2;
-		maxZ = z + sizeZ/2;
+		minX = x - sizeX/2 - boundBoxPaddingX;
+		maxX = x + sizeX/2 + boundBoxPaddingX;
+		minY = y - sizeY/2 - boundBoxPaddingY;
+		maxY = y + sizeY/2 + boundBoxPaddingY;
+		minZ = z - sizeZ/2 - boundBoxPaddingZ;
+		maxZ = z + sizeZ/2 + boundBoxPaddingZ;
 	}
 
 	void moveHorizontal(float x_movement) {
@@ -158,7 +162,7 @@ public:
 		shader->use();
 
 		glm::mat4 view = camera->GetViewMatrix();
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 
 		// Animation
 		if (useUVAnimation) {
@@ -173,12 +177,35 @@ public:
 		shader->setMat4("view", view);
 		shader->setMat4("projection", projection);
 		shader->setVec3("viewPos", camera->Position);
+
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(x, y, z));
-		if (angle != 0.0f) {
-			model = glm::rotate(model, glm::radians(angle), glm::vec3(rotX, rotY, rotZ));
+
+		if (isEnemy) {
+			// Compute camera axes in world space by inverting the view matrix.
+			// Use those axes to construct a rotation matrix that aligns the quad to face the camera.
+			glm::mat4 invView = glm::inverse(view);
+			glm::vec3 camRight = glm::normalize(glm::vec3(invView[0]));   // first column
+			glm::vec3 camUp = glm::normalize(glm::vec3(invView[1]));      // second column
+			glm::vec3 camForward = glm::normalize(glm::vec3(invView[2])); // third column
+
+			// Build rotation matrix from camera axes and apply scaling along each axis.
+			glm::mat4 billboard = glm::mat4(1.0f);
+			// Columns are the world-space axes for the quad; scale them to apply size.
+			billboard[0] = glm::vec4(camRight * sizeX, 0.0f);
+			billboard[1] = glm::vec4(camUp * sizeY, 0.0f);
+			// Use -camForward so the quad faces the camera (normal points toward camera).
+			billboard[2] = glm::vec4(-camForward * sizeZ, 0.0f);
+
+			model *= billboard;
 		}
-		model = glm::scale(model, glm::vec3(sizeX, sizeY, sizeZ));
+		else {
+			if (angle != 0.0f) {
+				model = glm::rotate(model, glm::radians(angle), glm::vec3(rotX, rotY, rotZ));
+			}
+			model = glm::scale(model, glm::vec3(sizeX, sizeY, sizeZ));
+		}
+
 		shader->setMat4("model", model);
 
 		shader->setVec3("objectColor", color);
@@ -199,17 +226,9 @@ public:
 		shader->use();
 		glDisable(GL_DEPTH_TEST);
 
-		//Ortho for 2D rendering
+		// Ortho for 2D rendering
 		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 
-		// Animation
-		/*if (useUVAnimation) {
-			int frameIndex = (int)(glfwGetTime() * animationSpeed) % numFrames;
-			uvOffset.y = (numFrames - 1 - frameIndex) * uvFrameHeight;
-		}
-		else {
-			uvOffset = glm::vec2(0.0f, 0.0f);
-		}*/
 		shader->setVec2("uvOffset", uvOffset);
 
 		shader->setMat4("projection", projection);
@@ -239,7 +258,7 @@ public:
 	void DrawInstanced() {
 		shader->use();
 		glm::mat4 view = camera->GetViewMatrix();
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 		
 		updateParticleVelocities();
 		updateInstanceOffsets();
@@ -247,7 +266,23 @@ public:
 		shader->setMat4("projection", projection);
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(x, y, z));
-		model = glm::scale(model, glm::vec3(sizeX, sizeY, sizeZ));
+
+		glm::mat4 invView = glm::inverse(view);
+		glm::vec3 camRight = glm::normalize(glm::vec3(invView[0]));   // first column
+		glm::vec3 camUp = glm::normalize(glm::vec3(invView[1]));      // second column
+		glm::vec3 camForward = glm::normalize(glm::vec3(invView[2])); // third column
+
+		// Build rotation matrix from camera axes and apply scaling along each axis.
+		glm::mat4 billboard = glm::mat4(1.0f);
+		// Columns are the world-space axes for the quad; scale them to apply size.
+		billboard[0] = glm::vec4(camRight * sizeX, 0.0f);
+		billboard[1] = glm::vec4(camUp * sizeY, 0.0f);
+		// Use -camForward so the quad faces the camera (normal points toward camera).
+		billboard[2] = glm::vec4(-camForward * sizeZ, 0.0f);
+
+		model *= billboard;
+
+		//model = glm::scale(model, glm::vec3(sizeX, sizeY, sizeZ));
 		shader->setMat4("model", model);
 		shader->setVec3("objectColor", color);
 		shader->setFloat("colorAlpha", colorAlpha);

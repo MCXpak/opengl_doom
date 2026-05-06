@@ -45,6 +45,7 @@ uniform bool isCube;
 uniform Material material;
 uniform int numPointLights;
 uniform int numLasers;
+uniform float lightIntensity;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -63,7 +64,7 @@ void main()
 
     // point light
     for (int i = 0; i < numPointLights; i++)
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir) * vec3(lightIntensity);
 
     // laser light
     for (int i = 0; i < numLasers; i++)

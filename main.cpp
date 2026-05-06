@@ -129,6 +129,18 @@ std::vector<float> base_gun_vertices = {
     -0.1f, -0.05f, 0.0f,    0.0f,   0.5f
 };
 
+std::vector<float> health_bar_vertices = {
+    // Position (x, y, z)      // Tex Coords (u, v)
+    -0.5f, -0.5f,  0.0f,       0.0f, 0.0f,  // Bottom-Left
+     0.5f, -0.5f,  0.0f,       1.0f, 0.0f,  // Bottom-Right
+     0.5f,  0.5f,  0.0f,       1.0f, 1.0f,  // Top-Right
+
+     0.5f,  0.5f,  0.0f,       1.0f, 1.0f,  // Top-Right
+    -0.5f,  0.5f,  0.0f,       0.0f, 1.0f,  // Top-Left
+    -0.5f, -0.5f,  0.0f,       0.0f, 0.0f   // Bottom-Left
+};
+
+
 std::vector<float> quadVertices = {
     // positions     // colors
     -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
@@ -151,7 +163,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -200,6 +212,17 @@ int main()
         {0,0,0,0,1,1,1,1},
     };
 
+    int enemy_coords[8][8] = {
+        {1,0,0,0,0,0,1,1},
+        {0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0},
+        {0,1,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0},
+        {0,0,1,0,0,0,0,0},
+        {0,0,0,0,1,1,0,0},
+        {0,0,0,0,1,1,0,0},
+    };
+
     //FLOOR
 
 	Entity floorEntity(manager.createMesh("floor", floor_vertices, (std::string) "./assets/metal_floor.png"), &ourShader, &camera);
@@ -208,26 +231,41 @@ int main()
 	Entity wallEntity(manager.createMesh("wall", floor_vertices, (std::string)"./assets/metal_wall.png"), &ourShader, &camera);
 	wallEntity.entityTexture = 0;
 
-    Entity enemyEntity(manager.createMesh("enemy_sprite", base_sprite_vertices, "./assets/monster_spritesheet.png"), &ourShader, &camera);
-    enemyEntity.useUVAnimation = true;
-    enemyEntity.numFrames = 4;
-    enemyEntity.uvFrameHeight = 0.25f;  // 1.0 / 4 frames
-    enemyEntity.animationSpeed = 5.0f;
-	enemyEntity.setPos(0, -0.1, 0);
-	enemyEntity.color = glm::vec3(1.0f, 0.0f, 0.0f);
-	entities.push_back(enemyEntity);
+    
+	// Generate enemy per eneny coordinate map
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+			if (enemy_coords[i][j] == 1) {
+                Entity enemyEntity(manager.createMesh("enemy_sprite", base_sprite_vertices, "./assets/monster_spritesheet.png"), &ourShader, &camera);
+                enemyEntity.useUVAnimation = true;
+                enemyEntity.numFrames = 4;
+                enemyEntity.uvFrameHeight = 0.25f;  // 1.0 / 4 frames
+                enemyEntity.animationSpeed = 5.0f;
+                enemyEntity.setPos(i, -0.1, j);
+                enemyEntity.color = glm::vec3(1.0f, 0.0f, 0.0f);
+                enemyEntity.boundBoxPaddingX = -0.4f;
+				enemyEntity.isEnemy = true;
+                entities.push_back(enemyEntity);
+            }
+        }
+	}
 
-    Entity lightCube(manager.createMesh("cube", cubeVertices, 36), &lightObjectShader, &camera, 0.0f, 0.6f, 0.0f);
-	lightCube.scale(0.2f, 0.1f, 0.2);
+    Entity lightCube(manager.createMesh("cube", cubeVertices, 36), &lightObjectShader, &camera, 0.0f, 0.45f, 2.0f);
+	lightCube.scale(0.2f, 0.05f, 0.2);
+
+    Entity lightCube2(manager.createMesh("cube", cubeVertices, 36), &lightObjectShader, &camera, 4.0f, 0.45f, 4.0f);
+    lightCube2.scale(0.2f, 0.05f, 0.2);
 
     std::vector<glm::vec3> pointLightPositions = {
         glm::vec3(lightCube.x, lightCube.y, lightCube.z),
-        glm::vec3(5.0f, 5.0f, 5.0f),
+        glm::vec3(lightCube2.x, lightCube2.y, lightCube2.z),
     };
 
 	Entity gunEntity(manager.createMesh2D("gun_sprite", base_gun_vertices, "./assets/gun_spritesheet.png"), &shader2D, &camera);
 	gunEntity.setPos(-0.5f, -0.3f, 0.0f);
 	gunEntity.scale(9.0f, 18.0f, 9.0f);
+
+    //Entity healthBar(manager.createMesh2D("health_bar", health_bar_vertices, "./assets/health_bar_futuristic.png"), &shader2D, &camera);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -249,7 +287,6 @@ int main()
         ourShader.setInt("material.diffuse", 0);
 		ourShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 		ourShader.setFloat("material.shininess", 0.0f);
-        //ourShader.setInt("texture2", 1);
 
         ourShader.setVec3("dirLight.ambient", 0.1f, 0.1f, 0.1f);
         ourShader.setVec3("dirLight.diffuse", 0.2f, 0.2f, 0.2f);
@@ -264,10 +301,10 @@ int main()
 			ourShader.setInt("numPointLights", (int)pointLightPositions.size());
             ourShader.setVec3(currPointLight + ".position", pointLightPositions[i]);
             ourShader.setFloat(currPointLight + ".constant", 1.0f);
-            ourShader.setFloat(currPointLight + ".linear", 0.09f);
-            ourShader.setFloat(currPointLight + ".quadratic", 0.032f);
-            ourShader.setVec3(currPointLight + ".ambient", glm::vec3(0.05f));
-            ourShader.setVec3(currPointLight + ".diffuse", glm::vec3(0.5f));
+            ourShader.setFloat(currPointLight + ".linear", 0.7f);
+            ourShader.setFloat(currPointLight + ".quadratic", 1.8f);
+            ourShader.setVec3(currPointLight + ".ambient", lightCube.color);
+            ourShader.setVec3(currPointLight + ".diffuse", lightCube.color);
             ourShader.setVec3(currPointLight + ".specular", glm::vec3(0.5f));
         }
 
@@ -281,12 +318,21 @@ int main()
             ourShader.setFloat(currLaser + ".constant", 1.0f);
             ourShader.setFloat(currLaser + ".linear", 0.09f);
             ourShader.setFloat(currLaser + ".quadratic", 0.032f);
-            ourShader.setVec3(currLaser + ".ambient", glm::vec3(0.01f, 0.0f, 0.0f));
+            ourShader.setVec3(currLaser + ".ambient", glm::vec3(0.1f, 0.0f, 0.0f));
             ourShader.setVec3(currLaser + ".diffuse", glm::vec3(0.1f, 0.0f, 0.0f));
-            ourShader.setVec3(currLaser + ".specular", glm::vec3(0.0002f));
+            ourShader.setVec3(currLaser + ".specular", glm::vec3(0.002f));
         }
 
+        // Update lightIntensity uniform overtime
+		float time = glfwGetTime();
+		float intensity = (sin(time * 2.0f) + 0.7f) / 2.0f; // Oscillates between 0 and 1
+        ourShader.setFloat("lightIntensity", intensity);
+        
+		// Draw light cubes
+		lightCube.color = glm::vec3(1.0f, 1.0f, 0.0f) * intensity;
+        lightCube2.color = glm::vec3(1.0f, 1.0f, 0.0f) * intensity;
         lightCube.Draw();
+		lightCube2.Draw();
 
         // Generate floor
         for (int i = 7; i >= 0; i--) {
@@ -297,6 +343,10 @@ int main()
 					floorEntity.rotate(90.0f, -1.0f, 0.0f, 0.0f);
 					floorEntity.setPos(i, 0, j);
 					floorEntity.Draw();
+
+                    floorEntity.rotate(90.0f, -1.0f, 0.0f, 0.0f);
+                    floorEntity.setPos(i, 1, j);
+                    floorEntity.Draw();
 
                     // WALL
                     // use floor coordinates to check where to place wall e.g. if floor coord = 1, check surronding coords, if surrounding is 0, place wall. if no surrounding i.e. out of coord space, place wall
@@ -341,11 +391,14 @@ int main()
 		}
 
         gunEntity.Draw2D();
+		//healthBar.Draw2D();
 
 		// Check collisions between lasers and enemy
         for (Entity& laser : lasers) {
-            checkCollision(laser, entities[0]);
-			updateEntities(entities, particleShader, manager);
+            for (Entity& entity : entities) {
+                checkCollision(laser, entity);
+                updateEntities(entities, particleShader, manager);
+            }
 		}
 
         // Draw particles
@@ -523,7 +576,6 @@ void processMouseInput(GLFWwindow* window, Shader* shader, ResourceManager* mana
         }
     }
 }
-
 
 void processInput(GLFWwindow* window)
 {
