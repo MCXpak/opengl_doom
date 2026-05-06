@@ -1,4 +1,9 @@
 # opengl_doom
+A Doom like game with my own from scratch game engine with OpenGL
+
+Added pulsating lights, improved level, added more enemies
+
+https://github.com/user-attachments/assets/62a73c85-21d3-4f52-9714-480b78cd09df
 
 Added particle effects on collision
 
